@@ -1,5 +1,5 @@
 run:
-	@python rockload/server.py
+	@env PYTHONPATH=. python rockload/server.py
 
 syncdb:
 	@mysql -u root < ./db/createdb.sql
