@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block header%}
+    <div>Welcome {{ user.name }} ({{ user.email }})</div>
+    <div><a href="/logout">logout</a></div>
+{% end %}
+
+{% block contents %}
+<h1 class="project">{{ project.name }}</h1>
+<h2>List of Test Runs</h2>
+{% if tests %}
+{% else %}
+    No tests found.
+{% end %}
+<div class="add-test"><a href="/projects/{{ project.id }}/tests/new">Create new test run</a></div>
+
+{% end %}

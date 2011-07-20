@@ -13,7 +13,7 @@ import tornado.ioloop
 import tornado.database
 from tornado.options import parse_config_file, define, options
 
-from rockload.handlers import MainHandler, AuthLoginHandler, AuthLogoutHandler
+from rockload.handlers import MainHandler, AuthLoginHandler, AuthLogoutHandler, CreateProjectHandler, ProjectTestsListHandler
 
 define("mysql_host", default="127.0.0.1:3306", help="rockload database host")
 define("mysql_database", default="rockload", help="rockload database name")
@@ -31,12 +31,16 @@ class RockLoadApp(tornado.web.Application):
         handlers = [
             (r'/', MainHandler),
             (r'/login', AuthLoginHandler),
-            (r'/logout', AuthLogoutHandler)
+            (r'/logout', AuthLogoutHandler),
+            (r'/projects/new', CreateProjectHandler),
+            (r'/projects/(\d+)', ProjectTestsListHandler)
         ]
 
         settings = {
             "cookie_secret": "QmVybmFyZG8gSGV5bmVtYW5uIE5hc2NlbnRlcyBkYSBTaWx2YQ==",
             "login_url": "/login",
+            "template_path": join(dirname(__file__), "templates"),
+            "static_path": join(dirname(__file__), "static"),
         }
 
         super(RockLoadApp, self).__init__(handlers, **settings)

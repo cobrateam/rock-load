@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block header%}
+    <div>Welcome {{ user.name }} ({{ user.email }})</div>
+    <div><a href="/logout">logout</a></div>
+{% end %}
+
+{% block contents %}
+    {% if projects %}
+        {% for project in projects %}
+            <div class="project-name"><a href="/projects/{{ project.id }}">{{ project.name }}</a></div>
+        {% end %}
+    {% else %}
+        <div class="no-projects">No projects found. <a href="/projects/new">Create a new project</a></div>
+    {% end %}
+{% end %}

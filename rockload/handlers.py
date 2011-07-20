@@ -18,7 +18,31 @@ class MainHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         user = self.get_current_user()
-        self.write('Welcome %s (%s)! <a href="/logout">logout</a>' % (user.name, user.email))
+        projects = self.db.query("SELECT * FROM project order by name")
+        self.render("home.html", user=user, projects=projects)
+
+class ProjectTestsListHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, project_id):
+        project = self.db.get("SELECT * FROM project WHERE id = %s", int(project_id))
+        if not project: raise tornado.web.HTTPError(404)
+        self.render("project_list.html", user=self.get_current_user(), project=project, tests=None)
+
+class CreateProjectHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        self.render("create_project.html", user=self.get_current_user())
+
+    @tornado.web.authenticated
+    def post(self):
+        name = self.get_argument("name")
+
+        self.db.execute(
+                "INSERT INTO project (name)"
+                "VALUES (%s)",
+                name)
+
+        self.redirect('/')
 
 class AuthLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
     @tornado.web.asynchronous
