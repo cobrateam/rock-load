@@ -1,0 +1,6 @@
+Introduction
+============
+
+Rock-Load is a web dashboard for funkload. It runs benchmarks and keeps track
+of a history of tests for a given project.
+
