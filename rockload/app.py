@@ -11,7 +11,7 @@ from os.path import join, abspath, dirname, expanduser, exists
 import tornado.web
 import tornado.ioloop
 import tornado.database
-from tornado.options import parse_config_file, define
+from tornado.options import parse_config_file, define, options
 
 from rockload.handlers import MainHandler, AuthLoginHandler, AuthLogoutHandler
 
