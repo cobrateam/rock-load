@@ -10,9 +10,15 @@ from os.path import join, abspath, dirname, expanduser, exists
 
 import tornado.web
 import tornado.ioloop
-from tornado.options import parse_config_file
+import tornado.database
+from tornado.options import parse_config_file, define
 
 from rockload.handlers import MainHandler, AuthLoginHandler, AuthLogoutHandler
+
+define("mysql_host", default="127.0.0.1:3306", help="rockload database host")
+define("mysql_database", default="rockload", help="rockload database name")
+define("mysql_user", default="root", help="rockload database user")
+define("mysql_password", default="", help="rockload database password")
 
 class RockLoadApp(tornado.web.Application):
 
@@ -34,6 +40,11 @@ class RockLoadApp(tornado.web.Application):
         }
 
         super(RockLoadApp, self).__init__(handlers, **settings)
+
+        # Have one global connection to the blog DB across all handlers
+        self.db = tornado.database.Connection(
+            host=options.mysql_host, database=options.mysql_database,
+            user=options.mysql_user, password=options.mysql_password)
 
     @classmethod
     def get_conf_file(cls, conf_file):

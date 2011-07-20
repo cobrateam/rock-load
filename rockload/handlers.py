@@ -6,6 +6,10 @@ import tornado.auth
 from tornado.options import options
 
 class BaseHandler(tornado.web.RequestHandler):
+    @property
+    def db(self):
+        return self.application.db
+
     def get_current_user(self):
         user_id = self.get_secure_cookie("user")
         if not user_id: return None
@@ -16,19 +20,25 @@ class MainHandler(BaseHandler):
     def get(self):
         self.write('Welcome %s' % self.get_current_user())
 
-class AuthLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
-    @tornado.web.asynchronous
-    def get(self):
-        if self.get_argument("openid.mode", None):
-            self.get_authenticated_user(self.async_callback(self._on_auth))
-            return
-        self.authenticate_redirect()
-    
-    def _on_auth(self, user):
+def _on_auth(self, user):
         if not user:
             raise tornado.web.HTTPError(500, "Google auth failed")
-        self.set_secure_cookie('user', user["email"])
+        user = self.db.get("SELECT * FROM user WHERE email = %s",
+                             user["email"])
+        if not user:
+            any_user = self.db.get("SELECT * FROM user LIMIT 1")
+            if not any_user:
+                user_id = self.db.execute(
+                    "INSERT INTO user(email, name) VALUES (%s,%s)",
+                    user["email"], user["name"])
+            else:
+                self.redirect("/")
+                return
+        else:
+            user_id = user["id"]
+        self.set_secure_cookie("user", str(user_id))
         self.redirect(self.get_argument("next", "/"))
+
 
 class AuthLogoutHandler(BaseHandler):
     def get(self):
