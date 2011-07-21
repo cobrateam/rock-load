@@ -21,6 +21,14 @@ class MainHandler(BaseHandler):
         projects = self.db.query("SELECT * FROM project order by name")
         self.render("home.html", user=user, projects=projects)
 
+class NewTestHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, project_id):
+        user = self.get_current_user()
+        project = self.db.get("SELECT * FROM project WHERE id = %s", int(project_id))
+        if not project: raise tornado.web.HTTPError(404)
+        self.render("new_test.html", user=user, project=project)
+
 class ProjectTestsListHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, project_id):

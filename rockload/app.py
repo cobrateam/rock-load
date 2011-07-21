@@ -14,6 +14,7 @@ import tornado.database
 from tornado.options import parse_config_file, define, options
 
 from rockload.handlers import MainHandler, AuthLoginHandler, AuthLogoutHandler, CreateProjectHandler, ProjectTestsListHandler
+from rockload.handlers import NewTestHandler
 
 define("mysql_host", default="127.0.0.1:3306", help="rockload database host")
 define("mysql_database", default="rockload", help="rockload database name")
@@ -33,7 +34,8 @@ class RockLoadApp(tornado.web.Application):
             (r'/login', AuthLoginHandler),
             (r'/logout', AuthLogoutHandler),
             (r'/projects/new', CreateProjectHandler),
-            (r'/projects/(\d+)', ProjectTestsListHandler)
+            (r'/projects/(\d+)', ProjectTestsListHandler),
+            (r'/projects/(\d+)/tests/new', NewTestHandler)
         ]
 
         settings = {
