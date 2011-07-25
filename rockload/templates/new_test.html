@@ -7,11 +7,15 @@
 
 {% block contents %}
 <h1 class="project">{{ project.name }}</h1>
-<h2>List of Test Runs</h2>
-{% if tests %}
-{% else %}
-    No tests found.
-{% end %}
-<div class="add-test"><a href="/projects/{{ project.id }}/tests/new">Create new test run</a></div>
+
+<h2>New Test</h2>
+<form method="post">
+    <label for="title">Title:</label>
+    <input type="text" name="title" id="title" />
+    <label for="description">Description:</label>
+    <input type="text" name="description" id="description" />
+    <label for="title">Título:</label>
+    <input type="text" name="title" id="title" />
+</form>
 
 {% end %}

@@ -23,7 +23,7 @@ define("mysql_password", default="", help="rockload database password")
 
 class RockLoadApp(tornado.web.Application):
 
-    def __init__(self, conf_file=None, custom_handlers=None):
+    def __init__(self, conf_file=None):
         if conf_file is None:
             conf_file = RockLoadApp.get_conf_file(conf_file)
 
