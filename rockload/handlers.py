@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from json import dumps
+
 import tornado.web
 import tornado.auth
 
@@ -8,6 +10,10 @@ class BaseHandler(tornado.web.RequestHandler):
     @property
     def db(self):
         return self.application.db
+
+    @property
+    def redis(self):
+        return self.application.redis
 
     def get_current_user(self):
         user_id = self.get_secure_cookie("user")
@@ -28,6 +34,38 @@ class NewTestHandler(BaseHandler):
         project = self.db.get("SELECT * FROM project WHERE id = %s", int(project_id))
         if not project: raise tornado.web.HTTPError(404)
         self.render("new_test.html", user=user, project=project)
+
+    @tornado.web.authenticated
+    def post(self, project_id):
+        user = self.get_current_user()
+        project = self.db.get("SELECT * FROM project WHERE id = %s", int(project_id))
+        if not project: raise tornado.web.HTTPError(404)
+
+        title = self.get_argument("title")
+        description = self.get_argument("description")
+        repo = self.get_argument("repository")
+        test_class = self.get_argument("testclass")
+
+        test = {
+            'userId': user.id,
+            'projectId': project.id,
+            'title': title,
+            'description': description,
+            'repo': repo,
+            'testClass': test_class
+        }
+
+        test_json = dumps(test);
+        test_id = self.db.execute("INSERT INTO test(project_id, test_data) VALUES(%s, %s)", project.id, test_json)
+        test['testId'] = test_id
+        test_json = dumps(test)
+        self.redis.rpush('tests', test_json)
+
+class NextTestHandler(BaseHandler):
+    def get(self):
+        element = self.redis.rpop('tests') or ''
+        self.set_header("Content-Type", "application/json")
+        self.write(element)
 
 class ProjectTestsListHandler(BaseHandler):
     @tornado.web.authenticated

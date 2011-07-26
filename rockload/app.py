@@ -12,14 +12,19 @@ import tornado.web
 import tornado.ioloop
 import tornado.database
 from tornado.options import parse_config_file, define, options
+import redis
 
 from rockload.handlers import MainHandler, AuthLoginHandler, AuthLogoutHandler, CreateProjectHandler, ProjectTestsListHandler
-from rockload.handlers import NewTestHandler
+from rockload.handlers import NewTestHandler, NextTestHandler
 
 define("mysql_host", default="127.0.0.1:3306", help="rockload database host")
 define("mysql_database", default="rockload", help="rockload database name")
 define("mysql_user", default="root", help="rockload database user")
 define("mysql_password", default="", help="rockload database password")
+
+define("redis_host", default="localhost", help="rockload redis host")
+define("redis_port", default=6379, type=int, help="rockload redis port")
+define("redis_db", default=0, type=int, help="rockload redis db name")
 
 class RockLoadApp(tornado.web.Application):
 
@@ -35,7 +40,8 @@ class RockLoadApp(tornado.web.Application):
             (r'/logout', AuthLogoutHandler),
             (r'/projects/new', CreateProjectHandler),
             (r'/projects/(\d+)', ProjectTestsListHandler),
-            (r'/projects/(\d+)/tests/new', NewTestHandler)
+            (r'/projects/(\d+)/tests/new', NewTestHandler),
+            (r'/tests/next', NextTestHandler)
         ]
 
         settings = {
@@ -51,6 +57,8 @@ class RockLoadApp(tornado.web.Application):
         self.db = tornado.database.Connection(
             host=options.mysql_host, database=options.mysql_database,
             user=options.mysql_user, password=options.mysql_password)
+
+        self.redis = redis.Redis(host=options.redis_host, port=options.redis_port, db=options.redis_db)
 
     @classmethod
     def get_conf_file(cls, conf_file):
