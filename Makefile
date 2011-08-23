@@ -1,6 +1,5 @@
-run:
-	@env PYTHONPATH=. python rockload/server.py
+help:
+	@echo "Available Targets:"
+	@cat Makefile | egrep '^(\w+?):' | sed 's/:\(.*\)//g' | sed 's/^/- /g'
 
-syncdb:
-	@mysql -u root < ./db/createdb.sql
-	@mysql -u root rockload < ./db/initial.sql
+
