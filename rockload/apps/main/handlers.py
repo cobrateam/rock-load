@@ -1,9 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from tornado.web import RequestHandler, authenticated
+from tornado.web import authenticated
 
-class IndexHandler(RequestHandler):
+from rockload.apps.base.handlers import BaseHandler
+
+class IndexHandler(BaseHandler):
     @authenticated
     def get(self):
         self.write("HELLO USER")
