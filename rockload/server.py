@@ -32,8 +32,9 @@ def main():
     }
 
     app = AeroApp(apps=[
-        'rockload.apps.main'
+        'rockload.apps.main',
         'rockload.apps.auth',
+        'rockload.apps.mongo',
         'rockload.apps.base',
         'aero.apps.healthcheck',
     ], **settings)

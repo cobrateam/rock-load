@@ -3,7 +3,7 @@
 
 from mongoengine import connect
 
-def app_start_handler(app):
+def app_start_handler(bus, app):
     connect('rockload', host='localhost', port=12345)
 
 def listen(app):

@@ -5,6 +5,7 @@ from tornado.web import RequestHandler
 import tornado.auth
 
 from rockload.apps.base.handlers import BaseHandler
+from rockload.apps.auth.models import User
 
 class LoginHandler(RequestHandler):
     def get(self):
@@ -18,11 +19,16 @@ class GoogleLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
             return
         self.authenticate_redirect()
     
-    def _on_auth(self, user):
-        if not user:
+    def _on_auth(self, user_data):
+        if not user_data:
             raise tornado.web.HTTPError(500, "Google auth failed")
 
-        self.set_secure_cookie("user", user['email'])
-        self.set_secure_cookie("username", user['name'])
+        self.set_secure_cookie("user", user_data['email'])
+
+        user = self.get_current_user()
+
+        user = User(email=user_data['email'], name=user_data['name'])
+        user.save()
+
         self.redirect(self.get_argument("next", "/"))
 

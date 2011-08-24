@@ -7,3 +7,10 @@ setup:
 
 run:
 	@PYTHONPATH=. python rockload/server.py
+
+drop:
+	@rm -rf ./db_data
+
+db:
+	@mkdir -p db_data
+	@mongod --dbpath ./db_data --port 12345 --rest
