@@ -7,8 +7,8 @@ from tornado.httpserver import HTTPServer
 
 from aero.app import AeroApp
 
-ip = "0.0.0.0"
-port = 9999
+DEFAULT_IP = "0.0.0.0"
+DEFAULT_PORT = 9999
 server = None
 
 def main():
@@ -17,9 +17,9 @@ def main():
     global ip
     global port
 
-    parser = optparse.OptionParser(usage="thumbor-urls or type thumbor-urls -h (--help) for help", description=__doc__, version="0.1.0")
-    parser.add_option("-p", "--port", type="int", dest="port", default=8888, help = "The port to run this thumbor instance at [default: %default]." )
-    parser.add_option("-i", "--ip", dest="ip", default="0.0.0.0", help = "The host address to run this thumbor instance at [default: %default]." )
+    parser = optparse.OptionParser(usage="rockload-server or type rockload-server -h (--help) for help", description=__doc__, version="0.1.0")
+    parser.add_option("-p", "--port", type="int", dest="port", default=DEFAULT_PORT, help = "The port to run this thumbor instance at [default: %default]." )
+    parser.add_option("-i", "--ip", dest="ip", default=DEFAULT_IP, help = "The host address to run this thumbor instance at [default: %default]." )
 
     (options, args) = parser.parse_args()
 
