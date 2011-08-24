@@ -5,3 +5,5 @@ help:
 setup:
 	@pip install -r REQUIREMENTS
 
+run:
+	@PYTHONPATH=. python rockload/server.py
