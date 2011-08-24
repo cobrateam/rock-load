@@ -1,0 +1,38 @@
+#header {
+    height: 146px;
+    background-color: #2f2f2f;
+}
+
+.separator {
+    border-top: solid 1px #d2d1d1;
+    border-bottom: solid 1px #bcbbbb;
+    background-color: #8f8d8d;
+    overflow: hidden;
+    height: 1px;
+}
+
+#logo {
+    background: url('../img/logobig.png') 0 36px no-repeat;
+    width: 155px;
+    height: 75px;
+    margin: 0 auto;
+    padding-top: 36px;
+    text-indent: -9999px;
+}
+
+#footer {
+    background-color: #2f2f2f;
+    height: 32px;
+    padding: 14px 0px;
+}
+
+#footer h3 {
+    font-size: 12px;
+    font-weight: bold;
+    color: #999999;
+    text-align: center;
+}
+
+#footer h3 a {
+    color: #efecca;
+}

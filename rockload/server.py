@@ -33,6 +33,8 @@ def main():
 
     app = AeroApp(apps=[
         'aero.apps.healthcheck',
+        'rockload.apps.base',
+        'rockload.apps.auth',
         'rockload.apps.main'
     ], **settings)
 

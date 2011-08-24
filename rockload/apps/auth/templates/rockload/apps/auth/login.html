@@ -1,0 +1,18 @@
+{% extends "rockload/apps/base/base.html" %}
+
+{% block css %}
+    <link rel="stylesheet" href="static/rockload/apps/auth/css/login.css" />
+{% end %}
+
+{% block content %}
+    <h2 class="login-notice">
+        in order to use rockload you must be logged in
+        please select your login provider
+    </h2>
+
+    <div class="socials-login">
+        <a href="/login/google">Login to Google</a>
+    </div>
+
+    <h3 class="login-providers-notice alert-message info">These are the login providers currently supported. More might be added in the future.</h3>
+{% end %}

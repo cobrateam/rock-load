@@ -1,0 +1,28 @@
+h2.login-notice {
+    width: 590px;
+    margin: 38px auto;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.socials-login {
+    margin: 0 auto;
+    width: 142px;
+}
+
+.socials-login a {
+    background: url('../img/socials.png') 0 0 no-repeat;
+    width: 142px;
+    height: 142px;
+    display: block;
+    text-indent: -9999px;
+    overflow: hidden;
+    margin-right: 80px;
+}
+
+.login-providers-notice {
+    text-align: center;
+    margin: 38px auto;
+    width: 466px;
+}
