@@ -32,10 +32,10 @@ def main():
     }
 
     app = AeroApp(apps=[
-        'aero.apps.healthcheck',
-        'rockload.apps.base',
-        'rockload.apps.auth',
         'rockload.apps.main'
+        'rockload.apps.auth',
+        'rockload.apps.base',
+        'aero.apps.healthcheck',
     ], **settings)
 
     run_app(ip, port, app)
