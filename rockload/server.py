@@ -26,10 +26,15 @@ def main():
     port = options.port
     ip = options.ip
 
+    settings = {
+        "cookie_secret": "d2hhdCBhIG5pY2Ugc2VjcmV0IGtleQ==",
+        "login_url": "/login"
+    }
+
     app = AeroApp(apps=[
         'aero.apps.healthcheck',
         'rockload.apps.main'
-    ])
+    ], **settings)
 
     run_app(ip, port, app)
 
