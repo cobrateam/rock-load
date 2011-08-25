@@ -134,8 +134,8 @@ class TestDetailsHandler(BaseHandler):
     @authenticated
     def get(self, project_name, test_name):
         project = Project.objects(name=project_name).get()
-        test = Test.objects(project=project, name=test_name).get()
-
-        self.render('rockload/apps/main/test_details.html', projects=self.all_projects(), project=project, test=test)
+        test_details = Test.objects(project=project, name=test_name).get()
+ 
+        self.render('rockload/apps/main/test_details.html', projects=self.all_projects(), project=project, test_details=test_details)
 
 
