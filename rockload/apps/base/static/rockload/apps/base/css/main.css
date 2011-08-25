@@ -1,3 +1,7 @@
+* {
+    list-style: none;
+}
+
 html, body {
     background-color: #2f2f2f;
 }
@@ -47,6 +51,9 @@ html, body {
 .white {
     background-color: #fff;
 }
+.grey {
+    background-color: #2f2f2f;
+}
 
 #footer {
     background-color: #2f2f2f;
@@ -83,4 +90,46 @@ html, body {
 
 .menu.create-project {
     margin-left: 40px;
+}
+
+#big-footer {
+    margin-top: 36px;
+}
+
+#big-footer .disclaimer,
+#big-footer .logo {
+    float: right;
+    overflow: hidden;
+}
+
+#big-footer p {
+    line-height: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #999;
+}
+
+#big-footer a {
+    color: #a7a37e;
+}
+
+#big-footer a:hover {
+    color: #efecca;
+    text-decoration: none;
+}
+
+#big-footer .logo {
+    background: url('../img/logobig.png') 30px 0 no-repeat;
+    width: 155px;
+    height: 75px;
+    margin: 0 0 20px 30px;
+    padding-left: 30px;
+    border-left: solid 1px #fff;
+}
+
+#big-footer .logo a {
+    text-indent: -9999px;
+    display: block;
+    width: 155px;
+    height: 75px;
 }

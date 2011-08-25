@@ -17,10 +17,7 @@ class Project(Document):
 
     @property
     def tests(self):
-        tests = Test.objects(project=self).all()
-        if tests:
-            return tests
-        return None
+        return Test.objects(project=self).all()
 
 class Test(Document):
     project = ReferenceField(Project, required=True)
@@ -33,3 +30,9 @@ class Test(Document):
     cycle_duration = FloatField(required=True, default=10.0)
     number_of_workers = IntField(required=True, default=3)
 
+    @property
+    def runs(self):
+        return TestRun.objects(test=self).all()
+
+class TestRun(Document):
+    test = ReferenceField(Test, required=True)

@@ -1,4 +1,4 @@
-$$('body').addEvent('click', function(e) {
+window.addEvent('click', function(e) {
     $$('a.menu').getParent("li").removeClass("open");
 });
 

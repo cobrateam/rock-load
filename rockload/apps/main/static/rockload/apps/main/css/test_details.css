@@ -1,0 +1,91 @@
+h1.title {
+    color: #ccc;
+}
+.statistics {
+    color: #ccc;
+    font-weight: bold;
+    font-size: 24px;
+    letter-spacing: -1px;
+    margin-top: 28px;
+}
+div.container.statistics-container {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+.test-statistics {
+    color: #999;
+}
+
+.perf-over-time {
+    color: #ccc;
+    font-weight: bold;
+    font-size: 24px;
+    letter-spacing: -1px;
+    margin-top: 28px;
+}
+
+.perf-actions {
+    margin-left: 0px;
+    margin-top: 28px;
+    overflow: hidden;
+}
+
+.perf-actions li {
+    float: left;
+    padding: 0 6px;
+    border-right: solid 2px #666;
+}
+
+.perf-actions li:first-child {
+    padding-left: 0px;
+}
+
+.perf-actions li:last-child {
+    padding-right: 0px;
+    border-right: solid 0px;
+}
+
+.perf-actions li a {
+    color: #666;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: -1px;
+    text-decoration: none;
+}
+
+.perf-actions li a:hover {
+    color: #999;
+    text-decoration: none;
+}
+
+.perf-actions .active a {
+    color: #999;
+}
+
+.chart {
+    margin-top: 16px;
+    margin-bottom: 38px;
+    height: 260px;
+    width: 100%;
+    border-radius: 3px;
+    background-color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+.previous-tests {
+    margin-top: 20px;
+}
+
+.row .span16.funkload-test {
+    margin-left: 0px;
+}
+
+a.view-tests {
+    color: #666;
+}
+
+a.view-tests:hover {
+    color: #999;
+    text-decoration: none;
+}
