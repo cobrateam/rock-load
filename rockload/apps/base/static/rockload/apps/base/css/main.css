@@ -76,3 +76,7 @@ html, body {
 .search-form {
     float: right;
 }
+
+.container.auth-container {
+    margin-top: 40px;
+}

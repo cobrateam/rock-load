@@ -50,7 +50,7 @@
             <div class="clearfix{% if 'cycles' in errors %} error{% end %} field">
                 <label for="name">Test Cycles</label>
                 <div class="input">
-                    <input class="xlarge" id="cycles" name="name" size="50" value="{{ values['test_class'] }}" type="text" />
+                    <input class="xlarge" id="cycles" name="cycles" size="50" value="{{ values['cycles'] }}" type="text" />
                     <span class="help-inline">this is the number of concurrent users you want benchmarked, separated by ':' <em>i.e.: 30:60:90 </em></span>
                 </div>
             </div>
@@ -65,10 +65,18 @@
 
             </div>
 
+            <div class="clearfix{% if 'number_of_workers' in errors %} error{% end %} field">
+                <label for="name">Number of workers</label>
+                <div class="input-append">
+                    <input class="medium" id="number_of_workers" name="number_of_workers" value="{{ values['number_of_workers'] }}" size="16" type="text">
+                    <span class="add-on">workers</span>
+                    <span class="help-inline">number of Rockload workers you want working in your test <em>i.e.: 3</em></span>
+                </div>
 
+            </div>
 
             <div class="actions">
-                <button type="submit" class="btn primary">Create project</button>&nbsp;<button id="cancel" class="btn">Cancel</button>
+                <button type="submit" class="btn primary">Create test</button>&nbsp;<button id="cancel" class="btn">Cancel</button>
             </div>
 
         </fieldset>

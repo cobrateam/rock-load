@@ -18,16 +18,25 @@
                     </h1>
                     <ul class="nav secondary-nav">
                         {% for item in projects %}
-                        <li class="menu{% if item.name == project.name %} active{% end %}">
+                        <li class="menu{% if project and item.name == project.name %} active{% end %}">
                                 <a href="#" class="menu">{{ item.name }}</a>
                                 <ul class="menu-dropdown">
-                                    <li><a href="#">Secondary link</a></li>
-                                    <li><a href="#">Something else here</a></li>
+                                    <li><a href="/projects/{{ item.name }}">Project details</a></li>
                                     <li class="divider"></li>
-                                    <li><a href="/projects/{{ project.name }}/tests/new">Create new test</a></li>
+                                    {% if item.tests %}
+                                        {% for test in item.tests %}
+                                        <li><a href="/projects/{{ item.name }}/tests/{{ test.name }}">{{ test.name }}</a></li>
+                                        {% end %}
+                                        <li class="divider"></li>
+                                    {% end %}
+                                    <li><a href="/projects/{{ item.name }}/tests/new">Create new test</a></li>
                                 </ul>
                             </li>
                         {% end %}
+
+                        <li class="menu">
+                            <a href="/projects/new">Create project</a>
+                        </li>
                     </ul>
                     <div class="search-form">
                         <form action="/projects/search">
@@ -40,7 +49,7 @@
     </div>
 
     <div class="white">
-        <div class="container">
+        <div class="container auth-container">
             <div class="main-container row">
                 <div class="span16 columns">
                     {% block content %}{% end %}

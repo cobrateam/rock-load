@@ -13,7 +13,7 @@ class IndexHandler(BaseHandler):
     def get(self):
         if not Project.get_projects_for_user(self.get_current_user()):
             self.redirect("/noprojects")
-        self.render('rockload/apps/main/index.html')
+        self.render('rockload/apps/main/index.html', projects=self.all_projects(), project=None)
 
 class NoProjectsHandler(BaseHandler):
     @authenticated
@@ -65,6 +65,76 @@ class NewTestHandler(BaseHandler):
                         'module': '',
                         'test_class': '',
                         'server_url': '',
-                        'cycles': '',
-                        'cycle_duration': ''
+                        'cycles': '30:60:90',
+                        'cycle_duration': 10,
+                        'number_of_workers': 3
                     })
+
+    def is_valid_cycles(self, cycles):
+        for cycle in cycles.split(':'):
+            try:
+                int(cycle)
+            except ValueError:
+                return False
+        return True
+
+    @authenticated
+    def post(self, project_name):
+        project = Project.objects(name=project_name).get()
+
+        name = self.get_argument('name', '')
+        module = self.get_argument('module', '')
+        test_class = self.get_argument('test_class', '')
+        server_url = self.get_argument('server_url', '')
+        cycles = self.get_argument('cycles', '')
+        try:
+            cycle_duration = float(self.get_argument('cycle_duration', ''))
+        except ValueError:
+            cycle_duration = 0
+        try:
+            number_of_workers = int(self.get_argument('number_of_workers', ''))
+        except ValueError:
+            number_of_workers = 0
+
+        errors = []
+
+        if not name: errors.append('name')
+        if not module: errors.append('module')
+        if not test_class: errors.append('test_class')
+        if not server_url: errors.append('server_url')
+        if not cycles or not self.is_valid_cycles(cycles): errors.append('cycles')
+        if cycle_duration <= 0: errors.append('cycle_duration')
+        if number_of_workers <= 0: errors.append('number_of_workers')
+
+        if errors:
+            self.render('rockload/apps/main/new_test.html', projects=self.all_projects(), project=project,
+                        errors=errors, values={
+                            'name': name,
+                            'module': module,
+                            'test_class': test_class,
+                            'server_url': server_url,
+                            'cycles': cycles,
+                            'cycle_duration': cycle_duration,
+                            'number_of_workers': number_of_workers
+                        })
+        else:
+            test = Test(project=project,
+                        name=name,
+                        module=module,
+                        test_class=test_class,
+                        server_url=server_url,
+                        cycles=cycles,
+                        cycle_duration=cycle_duration,
+                        number_of_workers=number_of_workers,
+                        created_at=datetime.now())
+            test.save()
+            self.redirect('/projects/%s/tests/%s' % (project.name, test.name))
+
+class TestDetailsHandler(BaseHandler):
+    @authenticated
+    def get(self, project_name, test_name):
+        project = Project.objects(name=project_name).get()
+        test = Test.objects(project=project, name=test_name).get()
+        self.write('tbw')
+
+
