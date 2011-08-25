@@ -1,0 +1,15 @@
+{% extends "rockload/apps/base/base.html" %}
+
+{% block css %}
+    <link rel="stylesheet" href="static/rockload/apps/main/css/noprojects.css" />
+{% end %}
+
+{% block content %}
+    <h2 class="no-projects-notice">
+        it seems you don't have any projects yet, so...
+    </h2>
+
+    <div class="lets-rock">
+        <a href="/projects/new">Create New Project</a>
+    </div>
+{% end %}

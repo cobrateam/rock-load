@@ -1,0 +1,17 @@
+h2.no-projects-notice {
+    width: 590px;
+    margin: 38px auto;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.lets-rock a {
+    background: url('../img/letsrock.png') 0 0 no-repeat;
+    width: 547px;
+    height: 163px;
+    display: block;
+    text-indent: -9999px;
+    overflow: hidden;
+    margin: 0 auto 85px auto;
+}

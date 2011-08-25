@@ -6,7 +6,7 @@ setup:
 	@pip install -r REQUIREMENTS
 
 run:
-	@PYTHONPATH=. python rockload/server.py
+	@PYTHONPATH=. python rockload/server.py --debug
 
 drop:
 	@rm -rf ./db_data

@@ -1,6 +1,9 @@
+html, body {
+    background-color: #2f2f2f;
+}
+
 #header {
     height: 146px;
-    background-color: #2f2f2f;
 }
 
 .separator {
@@ -17,7 +20,17 @@
     height: 75px;
     margin: 0 auto;
     padding-top: 36px;
+}
+
+#logo a {
     text-indent: -9999px;
+    display: block;
+    width: 155px;
+    height: 75px;
+}
+
+.white {
+    background-color: #fff;
 }
 
 #footer {
