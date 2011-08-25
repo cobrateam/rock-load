@@ -9,3 +9,4 @@ provy.egg-info
 *.swo
 db/
 db_data/
+.DS_Store

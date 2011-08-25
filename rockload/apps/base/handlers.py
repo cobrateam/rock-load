@@ -4,6 +4,7 @@
 import tornado.web
 
 from rockload.apps.auth.models import User
+from rockload.apps.main.models import Project
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -17,3 +18,5 @@ class BaseHandler(tornado.web.RequestHandler):
 
         return queryset[0]
 
+    def all_projects(self):
+        return Project.objects().all()

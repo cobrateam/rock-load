@@ -1,0 +1,81 @@
+{% extends "rockload/apps/base/auth_base.html" %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/rockload/apps/main/css/newtest.css" />
+{% end %}
+
+{% block content %}
+    <form method="POST" class="form-stacked">
+        <fieldset>
+            <legend>New Test Details</legend>
+
+            <div class="clearfix{% if 'name' in errors %} error{% end %} field">
+                <label for="name">Test Name</label>
+                <div class="input">
+                    <input class="xlarge" id="name" name="name" size="50" value="{{ values['name'] }}" type="text" />
+                    <span class="help-inline">this is the name that will appear in the menu</span>
+                </div>
+            </div>
+
+            <div class="clearfix{% if 'server_url' in errors %} error{% end %} field">
+                <label for="name">Server URL</label>
+                <div class="input">
+                    <input class="xlarge" id="server_url" name="server_url" size="50" value="{{ values['server_url'] }}" type="text" />
+                    <span class="help-inline">this is the URL that will be passed to the tests as base url</span>
+                </div>
+            </div>
+
+
+            <legend>Benchmark Details</legend>
+            <div class="alert-message block-message info">
+                <p><strong>Please remember!</strong> The benchmark modules must be inside the /bench folder in your git repository. <br />This is required in order for Rockload to find them.</p>
+            </div>
+
+            <div class="clearfix{% if 'module' in errors %} error{% end %} field">
+                <label for="name">Test Module</label>
+                <div class="input">
+                    <input class="xlarge" id="module" name="module" size="50" value="{{ values['module'] }}" type="text" />
+                    <span class="help-inline">this is the python module that contains your test <em>i.e.: mymodule.somebench</em></span>
+                </div>
+            </div>
+
+            <div class="clearfix{% if 'test_class' in errors %} error{% end %} field">
+                <label for="name">Test Class</label>
+                <div class="input">
+                    <input class="xlarge" id="test_class" name="test_class" size="50" value="{{ values['test_class'] }}" type="text" />
+                    <span class="help-inline">this is the test class that will be benchmarked <em>i.e.: MyBenchmarkTest</em></span>
+                </div>
+            </div>
+
+            <div class="clearfix{% if 'cycles' in errors %} error{% end %} field">
+                <label for="name">Test Cycles</label>
+                <div class="input">
+                    <input class="xlarge" id="cycles" name="name" size="50" value="{{ values['test_class'] }}" type="text" />
+                    <span class="help-inline">this is the number of concurrent users you want benchmarked, separated by ':' <em>i.e.: 30:60:90 </em></span>
+                </div>
+            </div>
+
+            <div class="clearfix{% if 'cycle_duration' in errors %} error{% end %} field">
+                <label for="name">Cycle Duration</label>
+                <div class="input-append">
+                    <input class="medium" id="cycle_duration" name="cycle_duration" value="{{ values['cycle_duration'] }}" size="16" type="text">
+                    <span class="add-on">seconds</span>
+                    <span class="help-inline">duration of each cycle <em>i.e.: 30</em></span>
+                </div>
+
+            </div>
+
+
+
+            <div class="actions">
+                <button type="submit" class="btn primary">Create project</button>&nbsp;<button id="cancel" class="btn">Cancel</button>
+            </div>
+
+        </fieldset>
+    </form>
+{% end %}
+
+{% block js %}
+<script type="text/javascript" charset="utf-8" src="/static/rockload/apps/main/js/form.js">
+</script>
+{% end %}

@@ -9,26 +9,31 @@
         <fieldset>
             <legend>New Project Details</legend>
 
-            <div class="clearfix">
+            <div class="clearfix{% if 'name' in errors %} error{% end %} field">
                 <label for="name">Project Name</label>
                 <div class="input">
-                    <input class="xlarge" id="name" name="name" size="50" type="text" />
+                    <input class="xlarge" id="name" name="name" size="50" value="{{ values['name'] }}" type="text" />
                     <span class="help-inline">this is the name that will appear in the menu</span>
                 </div>
             </div>
 
-            <div class="clearfix">
+            <div class="clearfix{% if 'gitrepo' in errors %} error{% end %} field">
                 <label for="gitrepo">Git Repository</label>
                 <div class="input">
-                    <input class="xlarge" id="gitrepo" name="gitrepo" size="70" type="text" />
+                    <input class="xlarge" id="gitrepo" name="gitrepo" size="70" value="{{ values['gitrepo'] }}" type="text" />
                     <span class="help-inline">this is the repository where your tests live</span>
                 </div>
             </div>
 
             <div class="actions">
-                <button type="submit" class="btn primary">Create project</button>&nbsp;<button type="reset" class="btn">Cancel</button>
+                <button type="submit" class="btn primary">Create project</button>&nbsp;<button id="cancel" class="btn">Cancel</button>
             </div>
 
         </fieldset>
     </form>
+{% end %}
+
+{% block js %}
+<script type="text/javascript" charset="utf-8" src="/static/rockload/apps/main/js/form.js">
+</script>
 {% end %}

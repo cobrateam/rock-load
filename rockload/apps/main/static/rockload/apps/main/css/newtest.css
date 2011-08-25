@@ -1,0 +1,28 @@
+form {
+    margin: 68px auto 38px;
+}
+
+form .clearfix.field {
+    margin: -4px 0 10px;
+}
+
+form .info {
+    margin-top: 10px;
+}
+
+form legend {
+    margin-top: 30px;
+}
+
+.actions {
+    margin-bottom: 10px;
+    border: none;
+    background-color: white;
+}
+
+form .field .input-append .help-inline {
+    display: block;
+    float: left;
+    padding-top: 5px;
+    padding-left: 9px;
+}

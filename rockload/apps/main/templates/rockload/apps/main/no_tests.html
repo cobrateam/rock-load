@@ -1,0 +1,15 @@
+{% extends "rockload/apps/base/auth_base.html" %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/rockload/apps/main/css/notests.css" />
+{% end %}
+
+{% block content %}
+    <h2 class="no-tests-notice">
+        it seems your project doesn't have any tests yet, so...
+    </h2>
+
+    <div class="lets-rock">
+        <a href="/projects/{{ project.name }}">Create New Test</a>
+    </div>
+{% end %}

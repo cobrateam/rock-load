@@ -2,8 +2,12 @@ form {
     margin: 38px auto;
 }
 
+form .clearfix.field {
+    margin: -4px 0 10px;
+}
+
 .actions {
-    margin: 10px 0px;
+    margin-bottom: 10px;
     border: none;
     background-color: white;
 }
