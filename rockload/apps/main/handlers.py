@@ -17,3 +17,8 @@ class NoProjectsHandler(BaseHandler):
     @authenticated
     def get(self):
         self.render('rockload/apps/main/no_projects.html')
+
+class NewProjectHandler(BaseHandler):
+    @authenticated
+    def get(self):
+        self.render('rockload/apps/main/new_project.html')
