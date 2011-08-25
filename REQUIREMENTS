@@ -1,4 +1,4 @@
 tornado==2.0.0
 redis==2.4.9
-aero==0.2.7a
+aero==0.2.8a
 mongoengine==0.4.0
