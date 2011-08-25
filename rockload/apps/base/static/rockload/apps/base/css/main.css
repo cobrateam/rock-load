@@ -80,3 +80,7 @@ html, body {
 .container.auth-container {
     margin-top: 40px;
 }
+
+.menu.create-project {
+    margin-left: 40px;
+}

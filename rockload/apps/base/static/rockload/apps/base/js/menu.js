@@ -3,8 +3,14 @@ $$('body').addEvent('click', function(e) {
 });
 
 $$('a.menu').addEvent('click', function(e) {
-    console.log(this.getParent('li'));
-    this.getParent("li").toggleClass('open');
+    var li = this.getParent('li');
+    var isOpen = li.hasClass('open');
+    $$('a.menu').getParent('li').removeClass('open');
+    if (isOpen) {
+        li.removeClass('open');
+    } else {
+        li.addClass('open');
+    }
     e.preventDefault();
     e.stopPropagation();
 });
