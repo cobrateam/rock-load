@@ -6,11 +6,12 @@ setup:
 	@pip install -r REQUIREMENTS
 
 run:
-	@PYTHONPATH=. python rockload/server.py --debug
+	@cd rockload && PYTHONPATH=../ aero serve
 
 drop:
+	@cat ./db_data/mongod.pid | xargs kill -9
 	@rm -rf ./db_data
 
 db:
-	@mkdir -p db_data
-	@mongod --dbpath ./db_data --port 12345 --rest
+	@mkdir -p ./db_data/data
+	@mongod --logpath `pwd`/db_data/mongod.log --pidfilepath `pwd`/db_data/mongod.pid --rest --port 12345 --dbpath `pwd`/db_data/data &
