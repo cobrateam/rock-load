@@ -1,0 +1,25 @@
+.available {
+    margin-top: 32px;
+}
+
+.tests {
+    width: 860px;
+    margin: 0 auto 32px auto;
+}
+
+.test-name {
+    float: left;
+    margin-top: -2px;
+    margin-right: 20px;
+}
+
+.start-test-form {
+    float: left;
+}
+
+.test {
+    width: 400px;
+    display: block;
+    margin-right: 30px;
+    float:left;
+}

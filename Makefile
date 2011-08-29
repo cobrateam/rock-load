@@ -6,7 +6,7 @@ setup:
 	@pip install -r REQUIREMENTS
 
 run:
-	@cd rockload && PYTHONPATH=../ aero serve
+	@cd rockload && PYTHONPATH=../ aero serve --debug
 
 drop:
 	@cat ./db_data/mongod.pid | xargs kill -9

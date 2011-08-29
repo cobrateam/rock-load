@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
+from urllib2 import quote
 
 from tornado.web import authenticated
 
 from rockload.apps.base.handlers import BaseHandler
-from rockload.apps.main.models import Project, Test
+from rockload.apps.main.models import Project, Test, TestStats
 
 class IndexHandler(BaseHandler):
     @authenticated
@@ -41,7 +42,7 @@ class NewProjectHandler(BaseHandler):
         else:
             prj = Project(name=name, git_repo=git_repo, created_at=datetime.now(), owner=self.get_current_user())
             prj.save()
-            self.redirect('/projects/%s' % name)
+            self.redirect('/projects/%s' % quote(name))
 
 class ProjectDetailsHandler(BaseHandler):
     @authenticated
@@ -127,15 +128,16 @@ class NewTestHandler(BaseHandler):
                         cycle_duration=cycle_duration,
                         number_of_workers=number_of_workers,
                         created_at=datetime.now())
+            test.stats = TestStats()
             test.save()
-            self.redirect('/projects/%s/tests/%s' % (project.name, test.name))
+            self.redirect('/projects/%s/tests/%s' % (quote(project.name), quote(test.name)))
 
 class TestDetailsHandler(BaseHandler):
     @authenticated
     def get(self, project_name, test_name):
         project = Project.objects(name=project_name).get()
-        test_details = Test.objects(project=project, name=test_name).get()
+        test = Test.objects(project=project, name=test_name).get()
  
-        self.render('rockload/apps/main/test_details.html', projects=self.all_projects(), project=project, test_details=test_details)
+        self.render('rockload/apps/main/test_details.html', projects=self.all_projects(), project=project, test=test)
 
 

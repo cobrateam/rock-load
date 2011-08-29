@@ -1,0 +1,15 @@
+{% extends "rockload/apps/base/auth_base.html" %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/rockload/apps/main/css/project_details.css" />
+{% end %}
+
+{% block content %}
+    <h1 class="available">{{ project.name }} - Available Tests</h1>
+
+    <div class="tests">
+        {% for test in tests %}
+        <h2 class="test"><a class="test-name" href="{{ test.url }}">{{ test.name }}</a><form class="start-test-form" method="GET" action="{{ test.url }}/start"><input type="submit" value="start new test" class="btn primary start-test" /></form></h2>
+        {% end %}
+    </div>
+{% end %}

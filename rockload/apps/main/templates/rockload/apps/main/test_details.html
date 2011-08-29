@@ -7,20 +7,20 @@
 {% block offgrid %}
 <div class="grey">
     <div class="container statistics-container">
-        <h1 class="title">{{ project.name }} - {{ test_details.name }} (<a class="view-tests" href="#tests">view tests</a>)</h1>
+        <h1 class="title">{{ project.name }} - {{ test.name }} (<a class="view-tests" href="#tests">view tests</a>)</h1>
         <h2 class="statistics">Statistics</h2>
         <div class="main-container row">
             <div class="span4 columns">
-                <h2 class="test-statistics">10</h2>
+                <h2 class="test-statistics">{{ test.stats.number_of_tests }}</h2>
             </div>
             <div class="span4 columns">
-                <h2 class="test-statistics">1h 35m 36s</h2>
+                <h2 class="test-statistics">{{ test.stats.total_duration }}</h2>
             </div>
             <div class="span4 columns">
-                <h2 class="test-statistics">1237.23</h2>
+                <h2 class="test-statistics">{{ test.stats.avg_reqs_sec }}</h2>
             </div>
             <div class="span4 columns">
-                <h2 class="test-statistics">0.8s</h2>
+                <h2 class="test-statistics">{{ test.stats.avg_response_time }}s</h2>
             </div>
         </div>
 
