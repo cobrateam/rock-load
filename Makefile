@@ -8,6 +8,9 @@ setup:
 run:
 	@cd rockload && PYTHONPATH=../ aero serve --debug
 
+collect:
+	@cd rockload && PYTHONPATH=../ aero collectstatic -o /tmp/rockload/static
+
 drop:
 	@cat ./db_data/mongod.pid | xargs kill -9
 	@rm -rf ./db_data
