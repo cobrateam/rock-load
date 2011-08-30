@@ -8,6 +8,8 @@ from datetime import datetime
 from urllib2 import quote
 from json import dumps
 from uuid import uuid4
+from bson.objectid import ObjectId
+from cStringIO import StringIO
 
 from tornado.web import authenticated
 
@@ -164,7 +166,7 @@ class StartTestHandler(BaseHandler):
 
         for index, worker in enumerate(range(test.number_of_workers)):
             test_cycle = test_cycles[index]
-            run = TestRun(id = uuid4(),
+            run = TestRun(uuid=str(uuid4()),
                           git_repo = project.git_repo,
                           module = test.module,
                           test_class = test.test_class,
@@ -190,7 +192,7 @@ class NextTaskHandler(BaseHandler):
 
         self.write(dumps({
             'task-details': {
-                'result_id': result.id,
+                'result_id': str(result.id),
                 'run_id': first_run.id,
                 'git_repo': first_run.git_repo,
                 'url': first_run.server_url,
@@ -204,10 +206,13 @@ class NextTaskHandler(BaseHandler):
 
 class SaveResultsHandler(BaseHandler):
     def post(self):
-        result = TestResult.objects(id=self.get_argument('result_id'))
+        result_id = ObjectId(self.get_argument('result_id'))
+        result = TestResult.objects(id=result_id).get()
         try:
-            run = filter(lambda run: run.id == self.get_argument('run_id'), result.runs)[0]
-            run.xml = self.get_argument('result')
+            run = filter(lambda run: run.uuid == self.get_argument('run_id'), result.runs)[0]
+            run.xml = StringIO(self.get_argument('result'))
+            run.done = True
+            result.save()
         except IndexError:
             pass
 
@@ -219,7 +224,7 @@ class SaveResultsHandler(BaseHandler):
             xml_file_names = []
             for run in result.runs:
                 xml_file = tempfile.NamedTemporaryFile(suffix='.xml', dir='/tmp/rockload')
-                xml_file.write(run.xml)
+                xml_file.write(self.get_argument('result'))
                 xml_file_names.append(xml_file.name)
 
             with lcd(xml_dir):

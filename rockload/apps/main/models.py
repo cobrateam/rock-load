@@ -4,7 +4,7 @@
 from urllib2 import quote
 
 from mongoengine import EmbeddedDocument, Document, StringField, ReferenceField, DateTimeField, FloatField, IntField
-from mongoengine import EmbeddedDocumentField, ListField
+from mongoengine import EmbeddedDocumentField, ListField, FileField, BooleanField
 
 from rockload.apps.auth.models import User
 
@@ -69,14 +69,15 @@ class Test(Document):
 
 
 class TestRun(EmbeddedDocument):
-    id = StringField(required=True)
+    uuid = StringField(required=True)
     git_repo = StringField(required=True)
     module = StringField(required=True)
     test_class = StringField(required=True)
     server_url = StringField(required=True)
     cycles = StringField(required=True)
     cycle_duration = IntField(required=True)
-    xml = StringField(required=False)
+    done = BooleanField(required=True, default=False)
+    xml = FileField()
 
 
 class TestResult(Document):
@@ -89,6 +90,6 @@ class TestResult(Document):
 
     @property
     def done(self):
-        return len([run for run in self.runs if not run.xml]) == 0
+        return len([run for run in self.runs if not run.done]) == 0
 
 
