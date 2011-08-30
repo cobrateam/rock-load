@@ -65,8 +65,11 @@ class Test(Document):
     def url(self):
         return "/projects/%s/tests/%s" % (quote(self.project.name), quote(self.name))
 
-
 class TestRun(Document):
+    project = ReferenceField(Project, required=True)
+    test = ReferenceField(Test, required=True)
+
+class TestResults(Document):
     test = ReferenceField(Test, required=True)
     xml = StringField(required=True)
     html = StringField(required=True)

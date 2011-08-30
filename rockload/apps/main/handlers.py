@@ -7,7 +7,7 @@ from urllib2 import quote
 from tornado.web import authenticated
 
 from rockload.apps.base.handlers import BaseHandler
-from rockload.apps.main.models import Project, Test, TestStats
+from rockload.apps.main.models import Project, Test, TestStats, TestRun
 
 class IndexHandler(BaseHandler):
     @authenticated
@@ -139,5 +139,14 @@ class TestDetailsHandler(BaseHandler):
         test = Test.objects(project=project, name=test_name).get()
  
         self.render('rockload/apps/main/test_details.html', projects=self.all_projects(), project=project, test=test)
+
+class StartTestHandler(BaseHandler):
+    def get(self, project_name, test_name):
+        project = Project.objects(name=project_name).get()
+        test = Test.objects(project=project, name=test_name).get()
+
+        run = TestRun(project=project, test=test)
+        run.save()
+        self.redirect(test.url + "?test_scheduled=true")
 
 
