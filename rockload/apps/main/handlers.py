@@ -3,6 +3,7 @@
 
 from datetime import datetime
 from urllib2 import quote
+from json import dumps
 
 from tornado.web import authenticated
 
@@ -153,20 +154,42 @@ class StartTestHandler(BaseHandler):
         test_cycles = [':'.join([str(int(cycle) / test.number_of_workers) for cycle in test.cycles.split(':')])] \
                             * test.number_of_workers
 
-        result = TestResult(test=test, number_of_workers=test.number_of_workers, done=False)
-        result.save()
+        result = TestResult(test=test, number_of_workers=test.number_of_workers)
 
         for index, worker in enumerate(range(test.number_of_workers)):
             test_cycle = test_cycles[index]
-            run = TestRun(result_id=result.id,
-                          git_repo = project.git_repo,
+            run = TestRun(git_repo = project.git_repo,
                           module = test.module,
                           test_class = test.test_class,
                           server_url = test.server_url,
                           cycles = test_cycle,
                           cycle_duration = test.cycle_duration)
 
-            run.save()
+            result.runs.append(run)
+
+        result.save()
         self.redirect(test.url + "?test_scheduled=true")
 
+
+class NextTaskHandler(BaseHandler):
+    def get(self):
+        all_runs = [result for result in TestResult.objects().all() if not result.done]
+
+        if not all_runs:
+            self.write(dumps('no-available-tasks'))
+            return
+
+        first_run = result.runs[0]
+
+        self.write(dumps({
+            'task-details': {
+                'result_id': result.id,
+                'git_repo': first_run.git_repo, 
+                'url': first_run.server_url,
+                'cycles': first_run.cycles,
+                'duration': first_run.cycle_duration,
+                'test_module': first_run.module,
+                'test_class': first_run.test_class
+            }
+        }))
 

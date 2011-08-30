@@ -4,7 +4,7 @@
 from urllib2 import quote
 
 from mongoengine import EmbeddedDocument, Document, StringField, ReferenceField, DateTimeField, FloatField, IntField
-from mongoengine import EmbeddedDocumentField, ObjectIdField, BooleanField
+from mongoengine import EmbeddedDocumentField, ListField
 
 from rockload.apps.auth.models import User
 
@@ -54,36 +54,40 @@ class Test(Document):
     test_class = StringField(required=True)
     server_url = StringField(required=True)
     cycles = StringField(required=True, default="30:60:90")
-    cycle_duration = FloatField(required=True, default=10.0)
+    cycle_duration = IntField(required=True, default=10)
     number_of_workers = IntField(required=True, default=3)
 
     stats = EmbeddedDocumentField(TestStats)
 
     @property
     def runs(self):
-        return TestResult.objects(test=self, done=True).all()
+        return [result for result in TestResult.objects(test=self).all() if result.done]
 
     @property
     def url(self):
         return "/projects/%s/tests/%s" % (quote(self.project.name), quote(self.name))
 
-class TestRun(Document):
-    result_id = ObjectIdField(required=True)
+class TestRun(EmbeddedDocument):
     git_repo = StringField(required=True)
 
     module = StringField(required=True)
     test_class = StringField(required=True)
     server_url = StringField(required=True)
     cycles = StringField(required=True)
-    cycle_duration = FloatField(required=True)
+    cycle_duration = IntField(required=True)
+    xml = StringField(required=False)
 
 
 class TestResult(Document):
     test = ReferenceField(Test, required=True)
     number_of_workers = IntField(required=True)
-    done = BooleanField(required=True, default=False)
-    xml = StringField(required=False)
     html = StringField(required=False)
     duration_in_seconds = IntField(required=False)
     date = DateTimeField(required=False)
+    runs = ListField(EmbeddedDocumentField(TestRun))
+
+    @property
+    def done(self):
+        return len([run for run in self.runs if not run.xml]) == 0
+
 
