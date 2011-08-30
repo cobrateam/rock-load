@@ -137,15 +137,33 @@ class TestDetailsHandler(BaseHandler):
     def get(self, project_name, test_name):
         project = Project.objects(name=project_name).get()
         test = Test.objects(project=project, name=test_name).get()
+
+        test_scheduled = False
+        if self.get_argument('test_scheduled') == 'true':
+            test_scheduled = True
  
-        self.render('rockload/apps/main/test_details.html', projects=self.all_projects(), project=project, test=test)
+        self.render('rockload/apps/main/test_details.html', projects=self.all_projects(), project=project, test=test, test_scheduled=test_scheduled)
 
 class StartTestHandler(BaseHandler):
     def get(self, project_name, test_name):
         project = Project.objects(name=project_name).get()
         test = Test.objects(project=project, name=test_name).get()
 
-        run = TestRun(project=project, test=test)
+        # transforms 30:60:90 in [10:20:30, 10:20:30, 10:20:30]
+        test_cycles = [':'.join([str(int(cycle) / test.number_of_workers) for cycle in test.cycles.split(':')])] \
+                            * test.number_of_workers
+
+        for index, worker in enumerate(range(test.number_of_workers)):
+            test_cycle = test_cycles[index]
+            run = TestRun(project_id=project.id,
+                          test_id=test.id,
+                          git_repo = project.git_repo,
+                          module = test.module,
+                          test_class = test.test_class,
+                          server_url = test.server_url,
+                          cycles = test_cycle,
+                          cycle_duration = test.cycle_duration)
+
         run.save()
         self.redirect(test.url + "?test_scheduled=true")
 

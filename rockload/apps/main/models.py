@@ -4,7 +4,7 @@
 from urllib2 import quote
 
 from mongoengine import EmbeddedDocument, Document, StringField, ReferenceField, DateTimeField, FloatField, IntField
-from mongoengine import EmbeddedDocumentField
+from mongoengine import EmbeddedDocumentField, ObjectIdField
 
 from rockload.apps.auth.models import User
 
@@ -49,25 +49,35 @@ class Test(Document):
     project = ReferenceField(Project, required=True)
     created_at = DateTimeField(required=True)
     name = StringField(required=True, unique=True)
+
     module = StringField(required=True)
     test_class = StringField(required=True)
     server_url = StringField(required=True)
     cycles = StringField(required=True, default="30:60:90")
     cycle_duration = FloatField(required=True, default=10.0)
     number_of_workers = IntField(required=True, default=3)
+
     stats = EmbeddedDocumentField(TestStats)
 
     @property
     def runs(self):
-        return TestRun.objects(test=self).all()
+        return TestResults.objects(test=self).all()
 
     @property
     def url(self):
         return "/projects/%s/tests/%s" % (quote(self.project.name), quote(self.name))
 
 class TestRun(Document):
-    project = ReferenceField(Project, required=True)
-    test = ReferenceField(Test, required=True)
+    project_id = ObjectIdField(required=True)
+    test_id = ObjectIdField(required=True)
+    git_repo = StringField(required=True)
+
+    module = StringField(required=True)
+    test_class = StringField(required=True)
+    server_url = StringField(required=True)
+    cycles = StringField(required=True)
+    cycle_duration = FloatField(required=True)
+
 
 class TestResults(Document):
     test = ReferenceField(Test, required=True)

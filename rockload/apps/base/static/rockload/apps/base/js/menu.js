@@ -15,3 +15,9 @@ $$('a.menu').addEvent('click', function(e) {
     e.stopPropagation();
 });
 
+$$('a.close').addEvent('click', function(e) {
+    var div = this.getParent('div.alert-message');
+    div.setStyle('display', 'none');
+    e.preventDefault();
+    e.stopPropagation();
+});

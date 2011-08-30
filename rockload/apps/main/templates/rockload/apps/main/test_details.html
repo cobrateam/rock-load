@@ -6,7 +6,15 @@
 
 {% block offgrid %}
 <div class="grey">
+   
     <div class="container statistics-container">
+        {% if test_scheduled %}
+        <div class="alert-message success">
+            <a class="close" href="#">×</a>
+            <p><strong>Test</strong> scheduled successfully!</p>
+        </div>
+        {% end %}
+ 
         <h1 class="title">{{ project.name }} - {{ test.name }} (<a class="view-tests" href="#tests">view tests</a>)</h1>
         <h2 class="statistics">Statistics</h2>
         <div class="main-container row">
