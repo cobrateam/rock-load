@@ -9,14 +9,9 @@ from aero.app import AeroApp
 
 DEFAULT_IP = "0.0.0.0"
 DEFAULT_PORT = 9999
-server = None
 
 def main():
     '''Runs rockload server with the specified arguments.'''
-    global server
-    global ip
-    global port
-
     parser = optparse.OptionParser(usage="rockload-server or type rockload-server -h (--help) for help", description=__doc__, version="0.1.0")
     parser.add_option("-p", "--port", type="int", dest="port", default=DEFAULT_PORT, help = "The port to run this thumbor instance at [default: %default]." )
     parser.add_option("-i", "--ip", dest="ip", default=DEFAULT_IP, help = "The host address to run this thumbor instance at [default: %default]." )
@@ -45,8 +40,6 @@ def main():
     run_app(ip, port, app, debug)
 
 def run_app(ip, port, app, debug):
-    global server
-
     server = HTTPServer(app)
     server.bind(port, ip)
     server.start(1)

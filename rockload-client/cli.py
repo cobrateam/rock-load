@@ -8,7 +8,6 @@ import optparse
 import time
 from urllib import urlopen, urlencode
 from uuid import uuid4
-import glob
 
 from fabric.api import local, lcd
 
@@ -38,6 +37,7 @@ def main():
 def post_results(server_url, task_details, result):
     return urlopen('%s/post-results' % server_url, urlencode({
         'result_id': task_details['result_id'],
+        'run_id': task_details['run_id'],
         'result': result
     }))
 

@@ -67,9 +67,10 @@ class Test(Document):
     def url(self):
         return "/projects/%s/tests/%s" % (quote(self.project.name), quote(self.name))
 
-class TestRun(EmbeddedDocument):
-    git_repo = StringField(required=True)
 
+class TestRun(EmbeddedDocument):
+    id = StringField(required=True)
+    git_repo = StringField(required=True)
     module = StringField(required=True)
     test_class = StringField(required=True)
     server_url = StringField(required=True)
@@ -81,7 +82,7 @@ class TestRun(EmbeddedDocument):
 class TestResult(Document):
     test = ReferenceField(Test, required=True)
     number_of_workers = IntField(required=True)
-    html = StringField(required=False)
+    html_path = StringField(required=False)
     duration_in_seconds = IntField(required=False)
     date = DateTimeField(required=False)
     runs = ListField(EmbeddedDocumentField(TestRun))

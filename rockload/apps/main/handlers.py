@@ -1,11 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import tempfile
+import os
+import shutil
 from datetime import datetime
 from urllib2 import quote
 from json import dumps
+from uuid import uuid4
 
 from tornado.web import authenticated
+
+from fabric.api import local, lcd
 
 from rockload.apps.base.handlers import BaseHandler
 from rockload.apps.main.models import Project, Test, TestResult, TestStats, TestRun
@@ -142,7 +148,7 @@ class TestDetailsHandler(BaseHandler):
         test_scheduled = False
         if self.get_argument('test_scheduled', None) == 'true':
             test_scheduled = True
- 
+
         self.render('rockload/apps/main/test_details.html', projects=self.all_projects(), project=project, test=test, test_scheduled=test_scheduled)
 
 class StartTestHandler(BaseHandler):
@@ -158,7 +164,8 @@ class StartTestHandler(BaseHandler):
 
         for index, worker in enumerate(range(test.number_of_workers)):
             test_cycle = test_cycles[index]
-            run = TestRun(git_repo = project.git_repo,
+            run = TestRun(id = uuid4(),
+                          git_repo = project.git_repo,
                           module = test.module,
                           test_class = test.test_class,
                           server_url = test.server_url,
@@ -184,7 +191,8 @@ class NextTaskHandler(BaseHandler):
         self.write(dumps({
             'task-details': {
                 'result_id': result.id,
-                'git_repo': first_run.git_repo, 
+                'run_id': first_run.id,
+                'git_repo': first_run.git_repo,
                 'url': first_run.server_url,
                 'cycles': first_run.cycles,
                 'duration': first_run.cycle_duration,
@@ -192,4 +200,35 @@ class NextTaskHandler(BaseHandler):
                 'test_class': first_run.test_class
             }
         }))
+
+
+class SaveResultsHandler(BaseHandler):
+    def post(self):
+        result = TestResult.objects(id=self.get_argument('result_id'))
+        try:
+            run = filter(lambda run: run.id == self.get_argument('run_id'), result.runs)[0]
+            run.xml = self.get_argument('result')
+        except IndexError:
+            pass
+
+        if result.done:
+            xml_dir = '/tmp/rockload/%s' % uuid4()
+            if not os.path.exists(xml_dir):
+                os.makedirs(xml_dir)
+
+            xml_file_names = []
+            for run in result.runs:
+                xml_file = tempfile.NamedTemporaryFile(suffix='.xml', dir='/tmp/rockload')
+                xml_file.write(run.xml)
+                xml_file_names.append(xml_file.name)
+
+            with lcd(xml_dir):
+                html_path = local('fl-build-report --html %s' % ' '.join(xml_file_names)).split('\n')[-1]
+                html_dir = os.path.dirname(html_path)
+                shutil.copytree(html_dir, self.application.settings.reports_dir)
+
+            result.html_path = os.path.join(self.application.settings.reports_dir, os.path.basename(html_dir))
+
+        result.save()
+
 
