@@ -7,7 +7,7 @@ from urllib2 import quote
 from tornado.web import authenticated
 
 from rockload.apps.base.handlers import BaseHandler
-from rockload.apps.main.models import Project, Test, TestStats, TestRun
+from rockload.apps.main.models import Project, Test, TestResult, TestStats, TestRun
 
 class IndexHandler(BaseHandler):
     @authenticated
@@ -139,7 +139,7 @@ class TestDetailsHandler(BaseHandler):
         test = Test.objects(project=project, name=test_name).get()
 
         test_scheduled = False
-        if self.get_argument('test_scheduled') == 'true':
+        if self.get_argument('test_scheduled', None) == 'true':
             test_scheduled = True
  
         self.render('rockload/apps/main/test_details.html', projects=self.all_projects(), project=project, test=test, test_scheduled=test_scheduled)
@@ -153,10 +153,12 @@ class StartTestHandler(BaseHandler):
         test_cycles = [':'.join([str(int(cycle) / test.number_of_workers) for cycle in test.cycles.split(':')])] \
                             * test.number_of_workers
 
+        result = TestResult(test=test, number_of_workers=test.number_of_workers, done=False)
+        result.save()
+
         for index, worker in enumerate(range(test.number_of_workers)):
             test_cycle = test_cycles[index]
-            run = TestRun(project_id=project.id,
-                          test_id=test.id,
+            run = TestRun(result_id=result.id,
                           git_repo = project.git_repo,
                           module = test.module,
                           test_class = test.test_class,
@@ -164,7 +166,7 @@ class StartTestHandler(BaseHandler):
                           cycles = test_cycle,
                           cycle_duration = test.cycle_duration)
 
-        run.save()
+            run.save()
         self.redirect(test.url + "?test_scheduled=true")
 
 

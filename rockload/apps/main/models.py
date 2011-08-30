@@ -4,7 +4,7 @@
 from urllib2 import quote
 
 from mongoengine import EmbeddedDocument, Document, StringField, ReferenceField, DateTimeField, FloatField, IntField
-from mongoengine import EmbeddedDocumentField, ObjectIdField
+from mongoengine import EmbeddedDocumentField, ObjectIdField, BooleanField
 
 from rockload.apps.auth.models import User
 
@@ -61,15 +61,14 @@ class Test(Document):
 
     @property
     def runs(self):
-        return TestResults.objects(test=self).all()
+        return TestResult.objects(test=self, done=True).all()
 
     @property
     def url(self):
         return "/projects/%s/tests/%s" % (quote(self.project.name), quote(self.name))
 
 class TestRun(Document):
-    project_id = ObjectIdField(required=True)
-    test_id = ObjectIdField(required=True)
+    result_id = ObjectIdField(required=True)
     git_repo = StringField(required=True)
 
     module = StringField(required=True)
@@ -79,10 +78,12 @@ class TestRun(Document):
     cycle_duration = FloatField(required=True)
 
 
-class TestResults(Document):
+class TestResult(Document):
     test = ReferenceField(Test, required=True)
-    xml = StringField(required=True)
-    html = StringField(required=True)
-    duration_in_seconds = IntField(required=True)
-    date = DateTimeField(required=True)
+    number_of_workers = IntField(required=True)
+    done = BooleanField(required=True, default=False)
+    xml = StringField(required=False)
+    html = StringField(required=False)
+    duration_in_seconds = IntField(required=False)
+    date = DateTimeField(required=False)
 
