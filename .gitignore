@@ -12,3 +12,4 @@ db_data/
 .DS_Store
 rockload/reports
 reports/
+rockload.egg-info/

@@ -5,7 +5,7 @@ from rockload.version import __version__
 
 setup(
     name='rockload',
-    version=__version__,
+    version='.'.join([str(item) for item in __version__]),
     description="rockload is a load testing tool that keeps track of how your projects evolve.",
     long_description="rockload is a load testing tool that keeps track of how your projects evolve.",
     keywords='load testing benchmark funkload',
@@ -24,9 +24,6 @@ setup(
                  'Topic :: System :: Installation/Setup'
     ],
     packages=find_packages(),
-    include_package_data=True,
-    package_data={
-    },
 
     install_requires=[
         "tornado==2.0.0",
@@ -40,7 +37,7 @@ setup(
     entry_points={
         'console_scripts': [
             'rockload-server = rockload.server:main',
-            'rockload-cli = rockload-client.cli:main',
+            'rockload-cli = rockload_client.cli:main',
         ],
     },
 
