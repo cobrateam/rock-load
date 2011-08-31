@@ -86,6 +86,7 @@
                         <label for="tests">Available test results</label>
                         <div class="input">
                             <select id="available-tests" name="tests" class="test-results">
+                                <option value='' selected="selected">--</option>
                                 {% for result in results %}
                                 <option value="/reports/{{ result.html_path }}">{{ result.formatted_date }}</option>
                                 {% end %}

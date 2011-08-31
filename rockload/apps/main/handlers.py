@@ -188,7 +188,11 @@ class NextTaskHandler(BaseHandler):
             if result.done: continue
 
             for run in result.runs:
-                if run.xml: continue
+                if run.xml or run.in_progress: continue
+
+                run.in_progress = True
+                result.save()
+
                 self.write(dumps({
                     'task-details': {
                         'result_id': str(result.id),
@@ -211,6 +215,7 @@ class SaveResultsHandler(BaseHandler):
         result = TestResult.objects(id=result_id).get()
         try:
             run = filter(lambda run: run.uuid == self.get_argument('run_id'), result.runs)[0]
+            run.in_progress = False
             run.xml = self.get_argument('result')
             result.save()
         except IndexError:

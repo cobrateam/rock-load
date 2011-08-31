@@ -4,7 +4,7 @@
 from urllib2 import quote
 
 from mongoengine import EmbeddedDocument, Document, StringField, ReferenceField, DateTimeField, FloatField, IntField
-from mongoengine import EmbeddedDocumentField, ListField
+from mongoengine import EmbeddedDocumentField, ListField, BooleanField
 
 from rockload.apps.auth.models import User
 
@@ -77,6 +77,7 @@ class TestRun(EmbeddedDocument):
     cycles = StringField(required=True)
     cycle_duration = IntField(required=True)
     xml = StringField(required=False)
+    in_progress = BooleanField(required=True, default=False)
 
 
 class TestResult(Document):
