@@ -145,7 +145,7 @@ class TestDetailsHandler(BaseHandler):
     def get(self, project_name, test_name):
         project = Project.objects(name=project_name).get()
         test = Test.objects(project=project, name=test_name).get()
-        results = TestResult.objects(test=test)
+        results = [result for result in TestResult.objects(test=test) if result.done]
 
         test_scheduled = False
         if self.get_argument('test_scheduled', None) == 'true':
@@ -236,8 +236,7 @@ class SaveResultsHandler(BaseHandler):
                         print 'found results under %s' % html_dir
                         target_path = os.path.join(self.application.settings['report_dir'], os.path.basename(html_dir))
                         shutil.copytree(html_dir, target_path)
-
-            result.html_path = os.path.join(self.application.settings['report_dir'], os.path.basename(html_dir), 'index.html')
+                        result.html_path = os.path.join(os.path.basename(html_dir), 'index.html')
 
             result.date = datetime.now()
 

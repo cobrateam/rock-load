@@ -90,3 +90,7 @@ a.view-tests:hover {
     color: #999;
     text-decoration: none;
 }
+
+#report-item {
+    border: none;
+}
