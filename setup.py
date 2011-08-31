@@ -25,20 +25,11 @@ setup(
     ],
     packages=find_packages(exclude=['vows']),
     include_package_data=True,
-    package_data={
-        'rockload': ['*.html'],
-        'rockload': ['*.htm'],
-        'rockload': ['*.css'],
-        'rockload': ['*.js'],
-        'rockload': ['*.gif'],
-        'rockload': ['*.png'],
-        'rockload': ['*.jpg'],
-        'rockload': ['*.jpeg'],
-    },
+    zip_safe=False,
 
     install_requires=[
         "tornado==2.0.0",
-        "aero==0.3.4a",
+        "aero==0.3.5a",
         "mongoengine==0.4.0",
         "funkload==1.16.1",
         "fabric==1.2.0",
