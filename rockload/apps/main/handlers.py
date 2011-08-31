@@ -182,27 +182,28 @@ class StartTestHandler(BaseHandler):
 
 class NextTaskHandler(BaseHandler):
     def get(self):
-        all_runs = [result for result in TestResult.objects().all() if not result.done]
+        results = TestResult.objects().all()
 
-        if not all_runs:
-            self.write(dumps('no-available-tasks'))
-            return
+        for result in results:
+            if result.done: continue
 
-        first_run = result.runs[0]
+            for run in result.runs:
+                if run.xml: continue
+                self.write(dumps({
+                    'task-details': {
+                        'result_id': str(result.id),
+                        'run_id': run.uuid,
+                        'git_repo': run.git_repo,
+                        'url': run.server_url,
+                        'cycles': run.cycles,
+                        'duration': run.cycle_duration,
+                        'test_module': run.module,
+                        'test_class': run.test_class
+                    }
+                }))
+                return
 
-        self.write(dumps({
-            'task-details': {
-                'result_id': str(result.id),
-                'run_id': first_run.id,
-                'git_repo': first_run.git_repo,
-                'url': first_run.server_url,
-                'cycles': first_run.cycles,
-                'duration': first_run.cycle_duration,
-                'test_module': first_run.module,
-                'test_class': first_run.test_class
-            }
-        }))
-
+        self.write(dumps('no-available-tasks'))
 
 class SaveResultsHandler(BaseHandler):
     def post(self):
@@ -210,8 +211,7 @@ class SaveResultsHandler(BaseHandler):
         result = TestResult.objects(id=result_id).get()
         try:
             run = filter(lambda run: run.uuid == self.get_argument('run_id'), result.runs)[0]
-            run.xml = StringIO(self.get_argument('result'))
-            run.done = True
+            run.xml = self.get_argument('result')
             result.save()
         except IndexError:
             pass
@@ -223,17 +223,24 @@ class SaveResultsHandler(BaseHandler):
 
             xml_file_names = []
             for run in result.runs:
-                xml_file = tempfile.NamedTemporaryFile(suffix='.xml', dir='/tmp/rockload')
-                xml_file.write(self.get_argument('result'))
-                xml_file_names.append(xml_file.name)
+                with tempfile.NamedTemporaryFile(suffix='.xml', dir=xml_dir, delete=False) as xml_file:
+                    xml_file.write(run.xml)
+                    xml_file_names.append(xml_file.name)
 
             with lcd(xml_dir):
-                html_path = local('fl-build-report --html %s' % ' '.join(xml_file_names)).split('\n')[-1]
-                html_dir = os.path.dirname(html_path)
-                shutil.copytree(html_dir, self.application.settings.reports_dir)
+                local('fl-build-report --html %s' % ' '.join(xml_file_names))
 
-            result.html_path = os.path.join(self.application.settings.reports_dir, os.path.basename(html_dir))
+                for item in os.listdir(xml_dir):
+                    html_dir = os.path.join(xml_dir, item)
+                    if os.path.isdir(html_dir) and os.path.exists(os.path.join(html_dir, 'index.html')):
+                        print 'found results under %s' % html_dir
+                        target_path = os.path.join(self.application.settings['report_dir'], os.path.basename(html_dir))
+                        shutil.copytree(html_dir, target_path)
 
-        result.save()
+            result.html_path = os.path.join(self.application.settings['report_dir'], os.path.basename(html_dir), 'index.html')
+
+            result.save()
+
+        self.write('OK')
 
 

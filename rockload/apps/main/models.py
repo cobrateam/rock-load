@@ -76,8 +76,7 @@ class TestRun(EmbeddedDocument):
     server_url = StringField(required=True)
     cycles = StringField(required=True)
     cycle_duration = IntField(required=True)
-    done = BooleanField(required=True, default=False)
-    xml = FileField()
+    xml = StringField(required=False)
 
 
 class TestResult(Document):
@@ -90,6 +89,9 @@ class TestResult(Document):
 
     @property
     def done(self):
-        return len([run for run in self.runs if not run.done]) == 0
+        for run in self.runs:
+            if not run.xml:
+                return False
+        return True
 
 

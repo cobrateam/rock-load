@@ -8,6 +8,7 @@ import optparse
 import time
 from urllib import urlopen, urlencode
 from uuid import uuid4
+import shutil
 
 from fabric.api import local, lcd
 
@@ -30,9 +31,9 @@ def main():
             details = task_details['task-details']
             print 'found task - %s' % details['url']
             result = process_task(details)
-            if not post_results(server_url, details, result).getcode() == '200':
+            if not post_results(server_url, details, result).read() == 'OK':
                 print 'Failed sending results to server for test %s' % details['result_id']
-        time.sleep(2)
+        time.sleep(20)
 
 def post_results(server_url, task_details, result):
     return urlopen('%s/post-results' % server_url, urlencode({
@@ -52,6 +53,7 @@ def process_task(task_details):
         local(command)
         xml_text = open(join(bench_path, 'funkload.xml')).read()
 
+    shutil.rmtree('/tmp/rockload/%s' % repo_id)
     return xml_text
 
 
