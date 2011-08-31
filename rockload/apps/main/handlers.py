@@ -173,6 +173,7 @@ class StartTestHandler(BaseHandler):
                           server_url = test.server_url,
                           cycles = test_cycle,
                           cycle_duration = test.cycle_duration)
+            run.stats = TestStats()
 
             result.runs.append(run)
 
@@ -217,6 +218,7 @@ class SaveResultsHandler(BaseHandler):
             run = filter(lambda run: run.uuid == self.get_argument('run_id'), result.runs)[0]
             run.in_progress = False
             run.xml = self.get_argument('result')
+            run.update_stats()
             result.save()
         except IndexError:
             pass

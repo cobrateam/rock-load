@@ -19,7 +19,7 @@
         <h2 class="statistics">Statistics</h2>
         <div class="main-container row">
             <div class="span4 columns">
-                <h2 class="test-statistics">{{ test.stats.number_of_tests }}</h2>
+                <h2 class="test-statistics">{{ test.stats.number_of_requests }}</h2>
             </div>
             <div class="span4 columns">
                 <h2 class="test-statistics">{{ test.stats.total_duration }}</h2>
@@ -34,7 +34,7 @@
 
         <div class="main-container row">
             <div class="span4 columns">
-                <p>number of tests</p>
+                <p>number of requests</p>
             </div>
             <div class="span4 columns">
                 <p>total testing time</p>
@@ -104,6 +104,43 @@
         <h2>No recorded tests yet.</h2>
         {% end %}
 
+        {% for result in results %}
+            {% for run in result.runs %}
+            ####################################################################
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+                {{ run.xml }}
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            ####################################################################
+            {% end %}
+
+        {% end %}
     </div>
 </div>
 

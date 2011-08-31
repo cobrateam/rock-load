@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from urllib2 import quote
+from lxml import etree
 
 from mongoengine import EmbeddedDocument, Document, StringField, ReferenceField, DateTimeField, FloatField, IntField
 from mongoengine import EmbeddedDocumentField, ListField, BooleanField
@@ -28,8 +29,8 @@ class Project(Document):
 
 
 class TestStats(EmbeddedDocument):
-    number_of_tests = IntField(required=True, default=0)
-    total_testing_duration = IntField(required=True, default=0)
+    number_of_requests = IntField(required=True, default=0)
+    total_request_duration = FloatField(required=True, default=0.0)
     avg_reqs_sec = FloatField(required=True, default=0.0)
     avg_response_time = FloatField(required=True, default=0.0)
 
@@ -79,6 +80,11 @@ class TestRun(EmbeddedDocument):
     xml = StringField(required=False)
     in_progress = BooleanField(required=True, default=False)
 
+    def update_stats(self):
+        root = etree.fromstring(self.xml)
+        for response in root.xpath('//response'):
+            import ipdb;ipdb.set_trace()
+
 
 class TestResult(Document):
     test = ReferenceField(Test, required=True)
@@ -87,6 +93,8 @@ class TestResult(Document):
     duration_in_seconds = IntField(required=False)
     date = DateTimeField(required=False)
     runs = ListField(EmbeddedDocumentField(TestRun))
+
+    stats = EmbeddedDocumentField(TestStats)
 
     @property
     def done(self):
@@ -98,3 +106,5 @@ class TestResult(Document):
     @property
     def formatted_date(self):
         return self.date.strftime('%d/%m/%Y %H:%M:%S')
+
+
