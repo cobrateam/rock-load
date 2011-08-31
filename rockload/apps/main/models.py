@@ -4,7 +4,7 @@
 from urllib2 import quote
 
 from mongoengine import EmbeddedDocument, Document, StringField, ReferenceField, DateTimeField, FloatField, IntField
-from mongoengine import EmbeddedDocumentField, ListField, FileField, BooleanField
+from mongoengine import EmbeddedDocumentField, ListField
 
 from rockload.apps.auth.models import User
 
@@ -94,4 +94,6 @@ class TestResult(Document):
                 return False
         return True
 
-
+    @property
+    def formatted_date(self):
+        return self.date.strftime('%d/%m/%Y %H:%M:%S')

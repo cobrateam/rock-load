@@ -9,7 +9,6 @@ from urllib2 import quote
 from json import dumps
 from uuid import uuid4
 from bson.objectid import ObjectId
-from cStringIO import StringIO
 
 from tornado.web import authenticated
 
@@ -146,12 +145,13 @@ class TestDetailsHandler(BaseHandler):
     def get(self, project_name, test_name):
         project = Project.objects(name=project_name).get()
         test = Test.objects(project=project, name=test_name).get()
+        results = TestResult.objects(test=test)
 
         test_scheduled = False
         if self.get_argument('test_scheduled', None) == 'true':
             test_scheduled = True
 
-        self.render('rockload/apps/main/test_details.html', projects=self.all_projects(), project=project, test=test, test_scheduled=test_scheduled)
+        self.render('rockload/apps/main/test_details.html', projects=self.all_projects(), project=project, test=test, test_scheduled=test_scheduled, results=results)
 
 class StartTestHandler(BaseHandler):
     def get(self, project_name, test_name):
@@ -238,6 +238,8 @@ class SaveResultsHandler(BaseHandler):
                         shutil.copytree(html_dir, target_path)
 
             result.html_path = os.path.join(self.application.settings['report_dir'], os.path.basename(html_dir), 'index.html')
+
+            result.date = datetime.now()
 
             result.save()
 

@@ -86,17 +86,9 @@
                         <label for="tests">Available test results</label>
                         <div class="input">
                             <select name="tests">
-                                <option>10/10/2010 10:10:10</option>
-                                <option>11/10/2010 11:10:10</option>
-                                <option>12/10/2010 12:10:10</option>
-                                <option>13/10/2010 12:10:10</option>
-                                <option>14/10/2010 12:10:10</option>
-                                <option>15/10/2010 12:10:10</option>
-                                <option>16/10/2010 12:10:10</option>
-                                <option>17/10/2010 12:10:10</option>
-                                <option>18/10/2010 12:10:10</option>
-                                <option>19/10/2010 12:10:10</option>
-                                <option>20/10/2010 12:10:10</option>
+                                {% for result in results %}
+                                <option>{{ result.formatted_date }}</option>
+                                {% end %}
                             </select>
                         </div>
                     </div>

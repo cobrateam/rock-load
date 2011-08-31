@@ -11,3 +11,4 @@ db/
 db_data/
 .DS_Store
 rockload/reports
+reports/
