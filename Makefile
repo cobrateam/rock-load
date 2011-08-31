@@ -6,7 +6,7 @@ setup:
 	@pip install -r REQUIREMENTS
 
 run:
-	@cd rockload && PYTHONPATH=../ aero serve --debug
+	@PYTHONPATH=. python rockload/server.py --debug
 
 collect:
 	@cd rockload && PYTHONPATH=../ aero collectstatic -o /tmp/rockload/static

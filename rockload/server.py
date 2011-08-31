@@ -8,7 +8,7 @@ from tornado.httpserver import HTTPServer
 from aero.app import AeroApp
 
 DEFAULT_IP = "0.0.0.0"
-DEFAULT_PORT = 9999
+DEFAULT_PORT = 3333
 
 def main():
     '''Runs rockload server with the specified arguments.'''
@@ -26,10 +26,13 @@ def main():
     settings = {
         "cookie_secret": "d2hhdCBhIG5pY2Ugc2VjcmV0IGtleQ==",
         "login_url": "/login",
-        "debug": debug
+        "debug": debug,
+        'report_dir': "./reports"
     }
 
-    app = AeroApp(apps=[
+    app = AeroApp([
+        (r"/reports/(.*)", tornado.web.StaticFileHandler, {"path": settings['report_dir']})
+    ], installed_apps=[
         'rockload.apps.main',
         'rockload.apps.auth',
         'rockload.apps.mongo',
@@ -37,9 +40,9 @@ def main():
         'aero.apps.healthcheck',
     ], **settings)
 
-    run_app(ip, port, app, debug)
+    run_app(ip, port, app)
 
-def run_app(ip, port, app, debug):
+def run_app(ip, port, app):
     server = HTTPServer(app)
     server.bind(port, ip)
     server.start(1)
