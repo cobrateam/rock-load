@@ -1,0 +1,11 @@
+prune dist
+prune build
+prune vows
+recursive-include rockload *.html
+recursive-include rockload *.gif
+recursive-include rockload *.jpg
+recursive-include rockload *.html
+recursive-include rockload *.htm
+recursive-include rockload *.png
+recursive-include rockload *.js
+recursive-include rockload *.css

@@ -23,11 +23,22 @@ setup(
                  'Programming Language :: Python :: 2.6',
                  'Topic :: System :: Installation/Setup'
     ],
-    packages=find_packages(),
+    packages=find_packages(exclude=['vows']),
+    include_package_data=True,
+    package_data={
+        'rockload': ['*.html'],
+        'rockload': ['*.htm'],
+        'rockload': ['*.css'],
+        'rockload': ['*.js'],
+        'rockload': ['*.gif'],
+        'rockload': ['*.png'],
+        'rockload': ['*.jpg'],
+        'rockload': ['*.jpeg'],
+    },
 
     install_requires=[
         "tornado==2.0.0",
-        "aero==0.3.3a",
+        "aero==0.3.4a",
         "mongoengine==0.4.0",
         "funkload==1.16.1",
         "fabric==1.2.0",

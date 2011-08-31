@@ -15,6 +15,7 @@ def main():
     parser = optparse.OptionParser(usage="rockload-server or type rockload-server -h (--help) for help", description=__doc__, version="0.1.0")
     parser.add_option("-p", "--port", type="int", dest="port", default=DEFAULT_PORT, help = "The port to run this thumbor instance at [default: %default]." )
     parser.add_option("-i", "--ip", dest="ip", default=DEFAULT_IP, help = "The host address to run this thumbor instance at [default: %default]." )
+    parser.add_option("-r", "--reports", dest="report_dir", default='./reports', help = "The directory where rockload will keep the reports. May be absolute or relative. [default: %default]." )
     parser.add_option("-d", "--debug", dest="debug", action="store_true", default=False, help = "Indicates that the app should be run in debug mode[default: %default]." )
 
     (options, args) = parser.parse_args()
@@ -22,23 +23,27 @@ def main():
     port = options.port
     ip = options.ip
     debug = options.debug
+    report_dir = options.report_dir
+
+    handlers = [
+        (r"/reports/(.*)", tornado.web.StaticFileHandler, {"path": report_dir})
+    ]
 
     settings = {
         "cookie_secret": "d2hhdCBhIG5pY2Ugc2VjcmV0IGtleQ==",
         "login_url": "/login",
         "debug": debug,
-        'report_dir': "./reports"
+        'report_dir': report_dir,
+        'installed_apps':  [
+            'rockload.apps.main',
+            'rockload.apps.auth',
+            'rockload.apps.mongo',
+            'rockload.apps.base',
+            'aero.apps.healthcheck',
+        ]
     }
 
-    app = AeroApp([
-        (r"/reports/(.*)", tornado.web.StaticFileHandler, {"path": settings['report_dir']})
-    ], installed_apps=[
-        'rockload.apps.main',
-        'rockload.apps.auth',
-        'rockload.apps.mongo',
-        'rockload.apps.base',
-        'aero.apps.healthcheck',
-    ], **settings)
+    app = AeroApp(handlers, **settings)
 
     run_app(ip, port, app)
 
@@ -48,6 +53,7 @@ def run_app(ip, port, app):
     server.start(1)
 
     try:
+        print '-- running rockload at %s:%s --' % (ip, port)
         tornado.ioloop.IOLoop.instance().start()
     except KeyboardInterrupt:
         print
