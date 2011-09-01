@@ -28,3 +28,30 @@ iframe.addEvent('load', function(ev) {
 
     iframe.setStyle('height', height + 'px');
 });
+
+var views_req = $('view-reqs-sec');
+var views_duration = $('view-avg-req-time');
+var chart_req = $('chart_div');
+var chart_duration = $('chart_div_2');
+
+views_req.addEvent('click', function(ev) {
+    chart_req.fade('in');
+    chart_duration.fade('out');
+
+    views_req.getParent('li').addClass('active');
+    views_duration.getParent('li').removeClass('active');
+
+    ev.preventDefault();
+    ev.stopPropagation();
+});
+
+views_duration.addEvent('click', function(ev) {
+    chart_req.fade('out');
+    chart_duration.fade('in');
+
+    views_req.getParent('li').removeClass('active');
+    views_duration.getParent('li').addClass('active');
+
+    ev.preventDefault();
+    ev.stopPropagation();
+});

@@ -55,15 +55,16 @@
 
                 <ul class="perf-actions">
                     <li class="action active">
-                        <a href="#reqspersec">Requests per second</a>
+                        <a id="view-reqs-sec" href="#reqspersec">Requests per second</a>
                     </li>
                     <li class="action">
-                        <a href="#avgreqtime">Average request time</a>
+                        <a id="view-avg-req-time" href="#avgreqtime">Average request time</a>
                     </li>
                 </ul>
 
                 <div class="chart">
-                    <img src="/static/rockload/apps/main/img/chart.png" />
+                    <div id="chart_div" style="width:900px; height:220px"></div>
+                    <div id="chart_div_2" style="width:900px; height:220px"></div>
                 </div>
                 <a name="tests"></a>
 
@@ -110,4 +111,32 @@
 
 {% block js %}
     <script src="/static/rockload/apps/main/js/test_details.js" type="text/javascript"></script>
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+    <script type='text/javascript'>
+        google.load('visualization', '1', {'packages':['annotatedtimeline']});
+
+        google.setOnLoadCallback(drawChart);
+        function drawChart(title, chart_div_id, func) {
+            function draw() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('date', 'Date');
+                data.addColumn('number', title);
+                data.addColumn('string', 'title1');
+                data.addColumn('string', 'text1');
+                data.addRows([
+                {% for result in results %}
+                [new Date({{ result.date.year }}, {{ result.date.month }} , {{ result.date.day }}, {{ result.date.hour }}, {{ result.date.minute }}, {{ result.date.second }}), func([{{ result.stats.avg_reqs_sec }}, {{ result.stats.avg_response_time}}]), undefined, undefined],
+                {% end %}
+                ]);
+
+                var chart = new google.visualization.AnnotatedTimeLine(document.getElementById(chart_div_id));
+                chart.draw(data, {displayAnnotations: false});
+            }
+            return draw;
+        }
+
+        google.setOnLoadCallback(drawChart('Requests per second', 'chart_div', function(stats) { return stats[0]; }));
+        google.setOnLoadCallback(drawChart('Avg. request duration', 'chart_div_2', function(stats) { return stats[1]; }));
+    </script>
+
 {% end %}

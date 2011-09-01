@@ -94,3 +94,13 @@ a.view-tests:hover {
 #report-item {
     border: none;
 }
+
+#chart_div {
+    position: absolute;
+    visibility: visible;
+}
+
+#chart_div_2 {
+    position: absolute;
+    visibility: hidden;
+}
