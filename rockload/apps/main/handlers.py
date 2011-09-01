@@ -163,6 +163,7 @@ class StartTestHandler(BaseHandler):
                             * test.number_of_workers
 
         result = TestResult(test=test, number_of_workers=test.number_of_workers)
+        result.stats = TestStats()
 
         for index, worker in enumerate(range(test.number_of_workers)):
             test_cycle = test_cycles[index]
@@ -173,7 +174,6 @@ class StartTestHandler(BaseHandler):
                           server_url = test.server_url,
                           cycles = test_cycle,
                           cycle_duration = test.cycle_duration)
-            run.stats = TestStats()
 
             result.runs.append(run)
 
@@ -218,7 +218,6 @@ class SaveResultsHandler(BaseHandler):
             run = filter(lambda run: run.uuid == self.get_argument('run_id'), result.runs)[0]
             run.in_progress = False
             run.xml = self.get_argument('result')
-            run.update_stats()
             result.save()
         except IndexError:
             pass
@@ -246,8 +245,11 @@ class SaveResultsHandler(BaseHandler):
                         result.html_path = os.path.join(os.path.basename(html_dir), 'index.html')
 
             result.date = datetime.now()
+            result.update_stats(self.application.settings['report_dir'])
 
             result.save()
+
+            result.test.update_stats()
 
         self.write('OK')
 

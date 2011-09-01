@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from urllib2 import quote
+from os.path import join, exists
 from lxml import etree
 
 from mongoengine import EmbeddedDocument, Document, StringField, ReferenceField, DateTimeField, FloatField, IntField
@@ -36,7 +37,7 @@ class TestStats(EmbeddedDocument):
 
     @property
     def total_duration(self):
-        seconds = int(self.total_testing_duration)
+        seconds = int(self.total_request_duration)
         hours = seconds / 3600
         seconds -= 3600*hours
         minutes = seconds / 60
@@ -68,6 +69,28 @@ class Test(Document):
     def url(self):
         return "/projects/%s/tests/%s" % (quote(self.project.name), quote(self.name))
 
+    def update_stats(self):
+        results = self.runs
+
+        number_of_requests = 0
+        total_request_duration = 0.0
+        avg_reqs_sec = 0.0
+        avg_response_time = 0.0
+
+        for result in results:
+            number_of_requests += result.stats.number_of_requests
+            total_request_duration += result.stats.total_request_duration
+            avg_reqs_sec += result.stats.avg_reqs_sec
+            avg_response_time += result.stats.avg_response_time
+
+        avg_response_time = avg_response_time / len(results)
+        avg_reqs_sec = avg_reqs_sec / len(results)
+
+        self.stats.number_of_requests = number_of_requests
+        self.stats.total_request_duration = total_request_duration
+        self.stats.avg_reqs_sec = avg_reqs_sec
+        self.stats.avg_response_time = avg_response_time
+        self.save()
 
 class TestRun(EmbeddedDocument):
     uuid = StringField(required=True)
@@ -80,11 +103,6 @@ class TestRun(EmbeddedDocument):
     xml = StringField(required=False)
     in_progress = BooleanField(required=True, default=False)
 
-    def update_stats(self):
-        root = etree.fromstring(self.xml)
-        for response in root.xpath('//response'):
-            import ipdb;ipdb.set_trace()
-
 
 class TestResult(Document):
     test = ReferenceField(Test, required=True)
@@ -96,6 +114,34 @@ class TestResult(Document):
 
     stats = EmbeddedDocumentField(TestStats)
 
+    def update_stats(self, report_dir):
+        if not self.html_path: return
+        html_file = join(report_dir.rstrip('/'), self.html_path.lstrip('/'))
+        if not exists(html_file): return
+
+        parser = etree.HTMLParser()
+        html = etree.parse(open(html_file, 'rb'), parser)
+
+        table_xpath = "//div[@id='funkload-bench-report']/div[@id='request-stats']//table[@class='docutils']//tr/td[%(column)d]"
+
+        requests_per_second = html.xpath(table_xpath % { 'column': 4 })
+        average_request_times = html.xpath(table_xpath % { 'column': 10 })
+        total_requests = html.xpath(table_xpath % { 'column': 6 })
+
+        def sum_collection(coll):
+            return reduce(lambda accumulator, item: accumulator + float(item.text), coll, 0.0)
+
+        sum_rps = sum_collection(requests_per_second)
+        sum_rt = sum_collection(average_request_times)
+        number_of_requests = sum_collection(total_requests)
+
+        self.stats.number_of_requests = number_of_requests
+        self.stats.avg_reqs_sec = sum_rps / len(requests_per_second)
+        self.stats.avg_response_time = sum_rt / len(average_request_times)
+        self.stats.total_request_duration = self.stats.avg_response_time * self.stats.number_of_requests
+
+        self.save()
+
     @property
     def done(self):
         for run in self.runs:
@@ -105,6 +151,7 @@ class TestResult(Document):
 
     @property
     def formatted_date(self):
+        if not self.date: return ''
         return self.date.strftime('%d/%m/%Y %H:%M:%S')
 
 

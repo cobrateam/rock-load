@@ -28,7 +28,7 @@
                 <h2 class="test-statistics">{{ test.stats.avg_reqs_sec }}</h2>
             </div>
             <div class="span4 columns">
-                <h2 class="test-statistics">{{ test.stats.avg_response_time }}s</h2>
+                <h2 class="test-statistics">{{ "%.04f" % test.stats.avg_response_time }}s</h2>
             </div>
         </div>
 
@@ -37,7 +37,7 @@
                 <p>number of requests</p>
             </div>
             <div class="span4 columns">
-                <p>total testing time</p>
+                <p>total requests duration</p>
             </div>
             <div class="span4 columns">
                 <p>average reqs/sec</p>
@@ -102,44 +102,6 @@
         </div>
         {% else %}
         <h2>No recorded tests yet.</h2>
-        {% end %}
-
-        {% for result in results %}
-            {% for run in result.runs %}
-            ####################################################################
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-                {{ run.xml }}
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            ####################################################################
-            {% end %}
-
         {% end %}
     </div>
 </div>
