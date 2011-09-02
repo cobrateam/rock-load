@@ -21,3 +21,12 @@ $$('a.close').addEvent('click', function(e) {
     e.preventDefault();
     e.stopPropagation();
 });
+
+$$('.delete-project').addEvent('click', function(ev) {
+    var deleteButton = this;
+    var result = confirm('Are you sure you want to delete this project? It will delete all its tests and gathered data.');
+    if (!result) {
+        ev.preventDefault();
+        ev.stopPropagation();
+    }
+});

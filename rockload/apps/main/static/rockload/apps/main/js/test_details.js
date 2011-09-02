@@ -55,3 +55,12 @@ views_duration.addEvent('click', function(ev) {
     ev.preventDefault();
     ev.stopPropagation();
 });
+
+$$('a.delete-button').addEvent('click', function(ev) {
+    var deleteButton = this;
+    var result = confirm('Are you sure you want to delete this test? It will delete all gathered data.');
+    if (!result) {
+        ev.preventDefault();
+        ev.stopPropagation();
+    }
+});

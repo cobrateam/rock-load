@@ -22,7 +22,9 @@ class IndexHandler(BaseHandler):
     def get(self):
         if not Project.get_projects_for_user(self.get_current_user()):
             self.redirect("/noprojects")
-        self.render('rockload/apps/main/index.html', projects=self.all_projects(), project=None)
+
+        results = TestResult.objects.order_by('-created_date').all()
+        self.render('rockload/apps/main/index.html', projects=self.all_projects(), project=None, results=results)
 
 class NoProjectsHandler(BaseHandler):
     @authenticated
@@ -162,7 +164,7 @@ class StartTestHandler(BaseHandler):
         test_cycles = [':'.join([str(int(cycle) / test.number_of_workers) for cycle in test.cycles.split(':')])] \
                             * test.number_of_workers
 
-        result = TestResult(test=test, number_of_workers=test.number_of_workers)
+        result = TestResult(test=test, number_of_workers=test.number_of_workers, created_date=datetime.now())
         result.stats = TestStats()
 
         for index, worker in enumerate(range(test.number_of_workers)):
@@ -178,7 +180,7 @@ class StartTestHandler(BaseHandler):
             result.runs.append(run)
 
         result.save()
-        self.redirect(test.url + "?test_scheduled=true")
+        self.redirect('/?test_scheduled=true')
 
 
 class NextTaskHandler(BaseHandler):
@@ -189,7 +191,7 @@ class NextTaskHandler(BaseHandler):
             if result.done: continue
 
             for run in result.runs:
-                if run.xml or run.in_progress: continue
+                if run.done or run.in_progress: continue
 
                 run.in_progress = True
                 result.save()
@@ -212,26 +214,33 @@ class NextTaskHandler(BaseHandler):
 
 class SaveResultsHandler(BaseHandler):
     def post(self):
+        xml_dir = '/tmp/rockload/%s' % uuid4()
+
+        if not os.path.exists(xml_dir):
+            os.makedirs(xml_dir)
+
         result_id = ObjectId(self.get_argument('result_id'))
         result = TestResult.objects(id=result_id).get()
         try:
             run = filter(lambda run: run.uuid == self.get_argument('run_id'), result.runs)[0]
             run.in_progress = False
-            run.xml = self.get_argument('result')
+
+            with tempfile.NamedTemporaryFile(suffix='.xml', dir=xml_dir, delete=False) as xml_file:
+                xml_file.write(self.get_argument('result'))
+                run.xml_file = xml_file.name
+
+            run.done = True
             result.save()
         except IndexError:
             pass
 
         if result.done:
-            xml_dir = '/tmp/rockload/%s' % uuid4()
-            if not os.path.exists(xml_dir):
-                os.makedirs(xml_dir)
-
             xml_file_names = []
             for run in result.runs:
                 with tempfile.NamedTemporaryFile(suffix='.xml', dir=xml_dir, delete=False) as xml_file:
-                    xml_file.write(run.xml)
-                    xml_file_names.append(xml_file.name)
+                    with open(run.xml_file, 'rb') as xml_source:
+                        xml_file.write(xml_source.read())
+                        xml_file_names.append(xml_file.name)
 
             with lcd(xml_dir):
                 local('fl-build-report --html %s' % ' '.join(xml_file_names))
@@ -244,7 +253,7 @@ class SaveResultsHandler(BaseHandler):
                         shutil.copytree(html_dir, target_path)
                         result.html_path = os.path.join(os.path.basename(html_dir), 'index.html')
 
-            result.date = datetime.now()
+            result.finished_date = datetime.now()
             result.update_stats(self.application.settings['report_dir'])
 
             result.save()
@@ -253,4 +262,33 @@ class SaveResultsHandler(BaseHandler):
 
         self.write('OK')
 
+class DeleteTestHandler(BaseHandler):
+    @authenticated
+    def get(self, project_name, test_name):
+        project = Project.objects(name=project_name).get()
+        test = Test.objects(project=project, name=test_name).get()
+
+        for test_result in TestResult.objects(test=test).all():
+            test_result.delete()
+
+        test.delete()
+
+        self.redirect('/?test-deleted=True')
+
+class DeleteProjectHandler(BaseHandler):
+    @authenticated
+    def get(self, project_name):
+        project = Project.objects(name=project_name).get()
+
+        tests = Test.objects(project=project).all()
+
+        for test in tests:
+            for test_result in TestResult.objects(test=test).all():
+                test_result.delete()
+
+            test.delete()
+
+        project.delete()
+
+        self.redirect('/?project-deleted=True')
 

@@ -100,8 +100,9 @@ class TestRun(EmbeddedDocument):
     server_url = StringField(required=True)
     cycles = StringField(required=True)
     cycle_duration = IntField(required=True)
-    xml = StringField(required=False)
+    xml_file = StringField(required=False)
     in_progress = BooleanField(required=True, default=False)
+    done = BooleanField(required=True, default=False)
 
 
 class TestResult(Document):
@@ -109,7 +110,8 @@ class TestResult(Document):
     number_of_workers = IntField(required=True)
     html_path = StringField(required=False)
     duration_in_seconds = IntField(required=False)
-    date = DateTimeField(required=False)
+    created_date = DateTimeField(required=True)
+    finished_date = DateTimeField(required=False)
     runs = ListField(EmbeddedDocumentField(TestRun))
 
     stats = EmbeddedDocumentField(TestStats)
@@ -145,13 +147,37 @@ class TestResult(Document):
     @property
     def done(self):
         for run in self.runs:
-            if not run.xml:
+            if not run.done:
                 return False
         return True
 
     @property
-    def formatted_date(self):
-        if not self.date: return ''
-        return self.date.strftime('%d/%m/%Y %H:%M:%S')
+    def in_progress(self):
+        for run in self.runs:
+            if run.in_progress:
+                return True
+        return False
+
+    @property
+    def status(self):
+        if self.done:
+            return "Done"
+        if self.in_progress:
+            return "In Progress"
+        return "Waiting"
+
+    @property
+    def formatted_created_date(self):
+        if not self.created_date: return ''
+        return self.created_date.strftime('%d/%m/%Y %H:%M')
+
+    @property
+    def formatted_finished_date(self):
+        if not self.finished_date: return ''
+        return self.finished_date.strftime('%d/%m/%Y %H:%M')
+
+    @property
+    def url(self):
+        return "%s#%s" % (self.test.url, str(self.id))
 
 

@@ -1,0 +1,34 @@
+h1.title {
+    margin-top: 20px;
+}
+
+.inbox thead th {
+    text-align: center;
+}
+.inbox thead th.test {
+    width: 15%;
+    text-align: left;
+}
+.inbox thead .status {
+    width: 12%;
+}
+.inbox thead .datetime {
+    width: 15%;
+}
+.inbox thead .reqs {
+    width: 12%;
+}
+.inbox thead .avgtime {
+    width: 12%;
+}
+.test-result-actions {
+    width: 20%;
+    text-align: right;
+}
+.inbox tbody td {
+    text-align: center;
+}
+.inbox tbody td.test {
+    text-align: left;
+}
+

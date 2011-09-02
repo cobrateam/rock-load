@@ -4,9 +4,10 @@
     <link rel="stylesheet" href="/static/rockload/apps/main/css/test_details.css" />
 {% end %}
 
+{% block grid %}{% end %}
+
 {% block offgrid %}
 <div class="grey">
-   
     <div class="container statistics-container">
         {% if test_scheduled %}
         <div class="alert-message success">
@@ -15,7 +16,67 @@
         </div>
         {% end %}
 
-        <h1 class="title">{{ project.name }} - {{ test.name }} (<a class="view-tests" href="#tests">view tests</a>)</h1>
+        <div class="header">
+            <h1 class="title">{{ project.name }} - {{ test.name }}</h1>
+            <div class="test-details-actions">
+                <a href="#tests" class="btn small primary">View</a>
+                <a href="{{ test.url }}/start" class="btn small primary">Rock It</a>
+                <a href="{{ test.url }}/delete" class="delete-button btn small danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="white">
+    <div class="container">
+        <h2 class="test-parameters">Parameters</h2>
+        <div class="main-container row">
+            <div class="span8 columns">
+                <h2 class="test-statistics">{{ test.module }}</h2>
+            </div>
+            <div class="span8 columns">
+                <h2 class="test-statistics">{{ test.test_class }}</h2>
+            </div>
+        </div>
+        <div class="main-container row">
+            <div class="span8 columns">
+                <p class="subtitle">Test Module</p>
+            </div>
+            <div class="span8 columns">
+                <p class="subtitle">Test Class & Method</p>
+            </div>
+        </div>
+ 
+        <div class="main-container row test-extra-parameters">
+            <div class="span4 columns">
+                <h2 class="test-statistics">{{ test.server_url.replace('http://', '') }}</h2>
+            </div>
+            <div class="span4 columns">
+                <h2 class="test-statistics">{{ test.cycles }}</h2>
+            </div>
+            <div class="span4 columns">
+                <h2 class="test-statistics">{{ test.cycle_duration }}</h2>
+            </div>
+            <div class="span4 columns">
+                <h2 class="test-statistics">{{ test.number_of_workers }}</h2>
+            </div>
+        </div>
+
+        <div class="main-container row">
+            <div class="span4 columns">
+                <p class="subtitle">server url</p>
+            </div>
+            <div class="span4 columns">
+                <p class="subtitle">cycles</p>
+            </div>
+            <div class="span4 columns">
+                <p class="subtitle">cycles duration</p>
+            </div>
+            <div class="span4 columns">
+                <p class="subtitle">number of workers</p>
+            </div>
+        </div>
+
+
         <h2 class="statistics">Statistics</h2>
         <div class="main-container row">
             <div class="span4 columns">
@@ -34,19 +95,22 @@
 
         <div class="main-container row">
             <div class="span4 columns">
-                <p>number of requests</p>
+                <p class="subtitle">number of requests</p>
             </div>
             <div class="span4 columns">
-                <p>total requests duration</p>
+                <p class="subtitle">total requests duration</p>
             </div>
             <div class="span4 columns">
-                <p>average reqs/sec</p>
+                <p class="subtitle">average reqs/sec</p>
             </div>
             <div class="span4 columns">
-                <p>average response time</p>
+                <p class="subtitle">average response time</p>
             </div>
         </div>
-
+    </div>
+</div>
+<div class="grey">
+    <div class="container">
         {% if len(test.runs) > 0 %}
         <div class="main-container row">
             <div class="span16 columns">
@@ -74,7 +138,9 @@
     </div>
 </div>
 
+{% if len(test.runs) > 0 %}
 <div class="separator"></div>
+{% end %}
 
 <div class="white">
     <div class="container">
@@ -89,7 +155,7 @@
                             <select id="available-tests" name="tests" class="test-results">
                                 <option value='' selected="selected">--</option>
                                 {% for result in results %}
-                                <option value="/reports/{{ result.html_path }}">{{ result.formatted_date }}</option>
+                                <option value="/reports/{{ result.html_path }}">{{ result.formatted_finished_date }}</option>
                                 {% end %}
                             </select>
                         </div>
@@ -102,7 +168,7 @@
             </div>
         </div>
         {% else %}
-        <h2>No recorded tests yet.</h2>
+        <h2 class="no-tests">No recorded tests yet.</h2>
         {% end %}
     </div>
 </div>
@@ -125,12 +191,14 @@
                 data.addColumn('string', 'text1');
                 data.addRows([
                 {% for result in results %}
-                [new Date({{ result.date.year }}, {{ result.date.month }} , {{ result.date.day }}, {{ result.date.hour }}, {{ result.date.minute }}, {{ result.date.second }}), func([{{ result.stats.avg_reqs_sec }}, {{ result.stats.avg_response_time}}]), undefined, undefined],
+                {% if result.finished_date %}
+                [new Date({{ result.finished_date.year }}, {{ result.finished_date.month }} , {{ result.finished_date.day }}, {{ result.finished_date.hour }}, {{ result.finished_date.minute }}, {{ result.finished_date.second }}), func([{{ result.stats.avg_reqs_sec }}, {{ result.stats.avg_response_time}}]), undefined, undefined],
+                {% end %}
                 {% end %}
                 ]);
 
                 var chart = new google.visualization.AnnotatedTimeLine(document.getElementById(chart_div_id));
-                chart.draw(data, {displayAnnotations: false});
+                chart.draw(data, {displayAnnotations: false, wmode: 'transparent' });
             }
             return draw;
         }

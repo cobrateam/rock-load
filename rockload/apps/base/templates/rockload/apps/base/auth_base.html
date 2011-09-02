@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>{% block title %}Rockload - Home{% end %}</title>
-    <link rel="stylesheet" href="/static/rockload/apps/base/css/bootstrap-1.1.0.min.css" />
+    <link rel="stylesheet" href="/static/rockload/apps/base/css/bootstrap-1.1.1.min.css" />
     <link rel="stylesheet" href="/static/rockload/apps/base/css/main.css" />
     {% block css %}{% end %}
 </head>
@@ -30,6 +30,7 @@
                                         <li class="divider"></li>
                                     {% end %}
                                     <li><a href="/projects/{{ item.name }}/tests/new">Create new test</a></li>
+                                    <li class="delete-project"><a href="/projects/{{ item.name }}/delete">Delete this project</a></li>
                                 </ul>
                             </li>
                         {% end %}
@@ -43,6 +44,7 @@
         </div> <!-- /topbar -->
     </div>
 
+    {% block grid %}
     <div class="white">
         <div class="container auth-container">
             <div class="main-container row">
@@ -52,6 +54,7 @@
             </div>
         </div>
     </div>
+    {% end %}
     {% block offgrid %}{% end %}
 
     <div class="separator"></div>

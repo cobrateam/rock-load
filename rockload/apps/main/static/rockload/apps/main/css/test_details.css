@@ -1,18 +1,36 @@
+.header {
+    overflow: hidden;
+}
+
 h1.title {
+    float: left;
+    overflow: hidden;
     color: #ccc;
     line-height: default;
 }
+
+.test-parameters,
 .statistics {
-    color: #ccc;
     font-weight: bold;
     font-size: 24px;
     letter-spacing: -1px;
-    margin-top: 28px;
-}
-div.container.statistics-container {
     margin-top: 25px;
+    margin-bottom: 3px;
+}
+
+.test-extra-parameters {
+    margin-top: -20px;
+}
+
+.subtitle {
+    margin-top: -20px;
+}
+
+div.container.statistics-container {
+    margin-top: 64px;
     margin-bottom: 25px;
 }
+
 .test-statistics {
     color: #999;
 }
@@ -103,4 +121,18 @@ a.view-tests:hover {
 #chart_div_2 {
     position: absolute;
     visibility: hidden;
+}
+
+.test-details-actions {
+    float: right;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.delete-button {
+    margin-left: 10px;
+}
+
+h2.no-tests {
+    margin: 20px 0;
 }

@@ -29,7 +29,7 @@ setup(
 
     install_requires=[
         "tornado==2.0.0",
-        "aero==0.3.5a",
+        "aero==0.3.6a",
         "mongoengine==0.4.0",
         "funkload==1.16.1",
         "fabric==1.2.0",
