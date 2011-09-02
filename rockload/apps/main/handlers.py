@@ -292,3 +292,14 @@ class DeleteProjectHandler(BaseHandler):
 
         self.redirect('/?project-deleted=True')
 
+class DeleteTestResultHandler(BaseHandler):
+    @authenticated
+    def get(self, project_name, test_name, test_result_id):
+        project = Project.objects(name=project_name).get()
+        test = Test.objects(project=project, name=test_name).get()
+        test_result = TestResult.objects(test=test, id=ObjectId(test_result_id))
+
+        test_result.delete()
+
+        test.update_stats()
+        self.redirect('/?test-deleted=True')

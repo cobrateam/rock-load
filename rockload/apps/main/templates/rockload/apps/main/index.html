@@ -5,36 +5,42 @@
 {% end %}
 
 {% block content %}
-<h1 class="title">inbox of tests</h1>
+<div class="inbox-container">
+    <h1 class="title">inbox of tests</h1>
 
-<table class="inbox zebra-striped">
-    <thead>
-        <th class="test">test</th>
-        <th class="status">status</th>
-        <th class="datetime">date</th>
-        <th class="reqs">req/sec</th>
-        <th class="avgtime">avg req time</th>
-        <th class="test-result-actions"></th>
-    </thead>
-    <tbody>
-        {% for result in results %}
-        <tr class="test-result-row" data-url="{{ result.url }}">
-            <td class="test">{{ result.test.project.name }} - {{ result.test.name }}</th>
-            <td class="status">{{ result.status }}</th>
-            <td class="datetime">{{ result.formatted_created_date }}</th>
-            <td class="reqs">{% if result.stats.avg_reqs_sec %}{{ "%.04f" % result.stats.avg_reqs_sec }}{% else %}--{% end %}</th>
-            <td class="avgtime">{% if result.stats.avg_response_time %}{{ "%.04f" % result.stats.avg_response_time }}{% else %}--{% end %}</th>
-            <td class="test-result-actions">
-                <a href="{{ result.test.url }}/start" class="btn small primary">Re-Rock It</a>
-                <button class="delete-test btn small danger">delete</button>
-            </td>
-        </tr>
-        {% end %}
-        {% if not results %}
-        <tr>
-            <td colspan="6"><h3>No test results available.</h3></td>
-        </tr>
-        {% end %}
-    </tbody>
-</table>
+    <table class="inbox zebra-striped">
+        <thead>
+            <th class="test">test</th>
+            <th class="status">status</th>
+            <th class="datetime">date</th>
+            <th class="reqs">req/sec</th>
+            <th class="avgtime">avg req time</th>
+            <th class="test-result-actions"></th>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr class="test-result-row" data-url="{{ result.url }}">
+                <td class="test">{{ result.test.project.name }} - {{ result.test.name }}</th>
+                <td class="status">{{ result.status }}</th>
+                <td class="datetime">{{ result.formatted_created_date }}</th>
+                <td class="reqs">{% if result.stats.avg_reqs_sec %}{{ "%.04f" % result.stats.avg_reqs_sec }}{% else %}--{% end %}</th>
+                <td class="avgtime">{% if result.stats.avg_response_time %}{{ "%.04f" % result.stats.avg_response_time }}{% else %}--{% end %}</th>
+                <td class="test-result-actions">
+                    <a href="{{ result.test.url }}/start" class="btn small primary">Re-Rock It</a>
+                    <a href="{{ result.delete_url }}" class="delete-button btn small danger">delete</a>
+                </td>
+            </tr>
+            {% end %}
+            {% if not results %}
+            <tr>
+                <td colspan="6"><h3>No test results available.</h3></td>
+            </tr>
+            {% end %}
+        </tbody>
+    </table>
+</div>
+{% end %}
+
+{% block js %}
+    <script src="/static/rockload/apps/main/js/index.js" type="text/javascript"></script>
 {% end %}

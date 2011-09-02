@@ -1,3 +1,7 @@
+.inbox-container {
+    min-height: 420px;
+}
+
 h1.title {
     margin-top: 20px;
 }
@@ -32,3 +36,6 @@ h1.title {
     text-align: left;
 }
 
+.test-result-row {
+    cursor: pointer;
+}

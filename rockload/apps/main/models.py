@@ -83,8 +83,8 @@ class Test(Document):
             avg_reqs_sec += result.stats.avg_reqs_sec
             avg_response_time += result.stats.avg_response_time
 
-        avg_response_time = avg_response_time / len(results)
-        avg_reqs_sec = avg_reqs_sec / len(results)
+        avg_response_time = results and avg_response_time / len(results) or 0
+        avg_reqs_sec = results and avg_reqs_sec / len(results) or 0
 
         self.stats.number_of_requests = number_of_requests
         self.stats.total_request_duration = total_request_duration
@@ -145,6 +145,18 @@ class TestResult(Document):
         self.save()
 
     @property
+    def url(self):
+        return "%s#%s" % (self.test.url, str(self.id))
+
+    @property
+    def base_url(self):
+        return "%s/%s" % (self.test.url, str(self.id))
+
+    @property
+    def delete_url(self):
+        return "%s/delete" % self.base_url
+
+    @property
     def done(self):
         for run in self.runs:
             if not run.done:
@@ -175,9 +187,5 @@ class TestResult(Document):
     def formatted_finished_date(self):
         if not self.finished_date: return ''
         return self.finished_date.strftime('%d/%m/%Y %H:%M')
-
-    @property
-    def url(self):
-        return "%s#%s" % (self.test.url, str(self.id))
 
 

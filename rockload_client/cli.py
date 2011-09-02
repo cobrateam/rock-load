@@ -10,7 +10,7 @@ from urllib import urlopen, urlencode
 from uuid import uuid4
 import shutil
 
-from fabric.api import local, lcd
+from fabric.api import local, lcd, settings
 
 DEFAULT_PORT = 3333
 DEFAULT_IP = '0.0.0.0'
@@ -33,7 +33,7 @@ def main():
             result = process_task(details)
             if not post_results(server_url, details, result).read() == 'OK':
                 print 'Failed sending results to server for test %s' % details['result_id']
-        time.sleep(20)
+        time.sleep(5)
 
 def post_results(server_url, task_details, result):
     return urlopen('%s/post-results' % server_url, urlencode({
@@ -49,8 +49,9 @@ def process_task(task_details):
 
     bench_path = '/tmp/rockload/%s/bench' % repo_id
     with lcd(bench_path):
-        command = """fl-run-bench -u %(url)s -c %(cycles)s -D %(duration)s --simple-fetch %(test_module)s %(test_class)s""" % task_details
-        local(command)
+        with settings(warn_only=True):
+            command = """fl-run-bench -u %(url)s -c %(cycles)s -D %(duration)s --simple-fetch %(test_module)s %(test_class)s""" % task_details
+            local(command)
         xml_text = open(join(bench_path, 'funkload.xml')).read()
 
     shutil.rmtree('/tmp/rockload/%s' % repo_id)

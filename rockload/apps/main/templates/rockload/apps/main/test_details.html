@@ -153,9 +153,8 @@
                         <label for="tests">Available test results</label>
                         <div class="input">
                             <select id="available-tests" name="tests" class="test-results">
-                                <option value='' selected="selected">--</option>
                                 {% for result in results %}
-                                <option value="/reports/{{ result.html_path }}">{{ result.formatted_finished_date }}</option>
+                                <option id="{{ str(result.id) }}" value="/reports/{{ result.html_path }}">{{ result.formatted_finished_date }}</option>
                                 {% end %}
                             </select>
                         </div>
@@ -178,6 +177,8 @@
 {% block js %}
     <script src="/static/rockload/apps/main/js/test_details.js" type="text/javascript"></script>
     <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+
+    {% if results %}
     <script type='text/javascript'>
         google.load('visualization', '1', {'packages':['annotatedtimeline']});
 
@@ -206,5 +207,17 @@
         google.setOnLoadCallback(drawChart('Requests per second', 'chart_div', function(stats) { return stats[0]; }));
         google.setOnLoadCallback(drawChart('Avg. request duration', 'chart_div_2', function(stats) { return stats[1]; }));
     </script>
+    {% end %}
 
+    <script type='text/javascript'>
+        var id = window.location.hash;
+        var select = $('available-tests');
+        if (select) {
+            var option = select.getElement(id) || select.getFirst();
+            if (option) {
+                option.set('selected', true);
+                select.fireEvent('change');
+            }
+        }
+    </script>
 {% end %}
