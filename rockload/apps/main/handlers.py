@@ -212,6 +212,30 @@ class NextTaskHandler(BaseHandler):
 
         self.write(dumps('no-available-tasks'))
 
+
+class UpdateTestRunDataHandler(BaseHandler):
+    def post(self):
+        result_id = ObjectId(self.get_argument('result_id'))
+        result = TestResult.objects(id=result_id).get()
+
+        run = filter(lambda run: run.uuid == self.get_argument('run_id'), result.runs)[0]
+        run.in_progress = self.get_argument('in_progress') == 'True'
+        run.cloned = self.get_argument('cloned') == 'True'
+        result.save()
+
+        self.write('OK')
+
+class CanStartTestHandler(BaseHandler):
+    def get(self, result_id):
+        result_id = ObjectId(result_id)
+        result = TestResult.objects(id=result_id).get()
+
+        if result.cloned:
+            self.write("True")
+            return
+
+        self.write("False")
+
 class SaveResultsHandler(BaseHandler):
     def post(self):
         xml_dir = '/tmp/rockload/%s' % uuid4()

@@ -111,11 +111,11 @@
 </div>
 <div class="grey">
     <div class="container">
-        {% if len(test.runs) > 0 %}
+        {% if len(results) > 0 %}
         <div class="main-container row">
             <div class="span16 columns">
 
-                <h2 class="perf-over-time">Performance over time (out of {{ len(test.runs) }} tests)</h2>
+                <h2 class="perf-over-time">Performance over time (out of {{ len(results) }} tests)</h2>
 
                 <ul class="perf-actions">
                     <li class="action active">
@@ -138,13 +138,13 @@
     </div>
 </div>
 
-{% if len(test.runs) > 0 %}
+{% if len(results) > 0 %}
 <div class="separator"></div>
 {% end %}
 
 <div class="white">
     <div class="container">
-        {% if len(test.runs) > 0 %}
+        {% if len(results) > 0 %}
         <div class="main-container row previous-tests">
             <h2>Previous Tests</h2>
             <div class="span16 columns funkload-test">

@@ -63,7 +63,9 @@ class Test(Document):
 
     @property
     def runs(self):
-        return [result for result in TestResult.objects(test=self).all() if result.done]
+        results = [result for result in TestResult.objects(test=self) if result.done]
+
+        return [result for result in results if result.done]
 
     @property
     def url(self):
@@ -103,6 +105,7 @@ class TestRun(EmbeddedDocument):
     xml_file = StringField(required=False)
     in_progress = BooleanField(required=True, default=False)
     done = BooleanField(required=True, default=False)
+    cloned = BooleanField(required=True, default=False)
 
 
 class TestResult(Document):
@@ -164,6 +167,14 @@ class TestResult(Document):
         return True
 
     @property
+    def cloned(self):
+        for run in self.runs:
+            if not run.cloned:
+                return False
+        return True
+
+
+    @property
     def in_progress(self):
         for run in self.runs:
             if run.in_progress:
@@ -174,8 +185,10 @@ class TestResult(Document):
     def status(self):
         if self.done:
             return "Done"
-        if self.in_progress:
+        if self.cloned:
             return "In Progress"
+        if self.in_progress:
+            return "Cloning..."
         return "Waiting"
 
     @property

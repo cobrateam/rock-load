@@ -30,10 +30,19 @@ def main():
         if 'task-details' in task_details:
             details = task_details['task-details']
             print 'found task - %s' % details['url']
-            result = process_task(details)
+            result = process_task(server_url, details)
             if not post_results(server_url, details, result).read() == 'OK':
                 print 'Failed sending results to server for test %s' % details['result_id']
         time.sleep(5)
+
+def update_data(server_url, task_details, cloned, in_progress):
+    return urlopen('%s/update-results' % server_url, urlencode({
+        'result_id': task_details['result_id'],
+        'run_id': task_details['run_id'],
+        'cloned': cloned,
+        'in_progress': in_progress
+    }))
+
 
 def post_results(server_url, task_details, result):
     return urlopen('%s/post-results' % server_url, urlencode({
@@ -42,8 +51,20 @@ def post_results(server_url, task_details, result):
         'result': result
     }))
 
-def process_task(task_details):
+def cant_start_task(server_url, task_details):
+    result = urlopen('%s/can-start/%s' % (server_url, task_details['result_id']))
+    can_start = result.read() == 'True'
+
+    return not can_start
+
+
+def process_task(server_url, task_details):
     repo_id = download_from_git(task_details['git_repo'])
+    update_data(server_url, task_details, True, False)
+
+    while cant_start_task(server_url, task_details):
+        print "waiting for server to allow starting task..."
+        time.sleep(1)
 
     xml_text = ''
 
