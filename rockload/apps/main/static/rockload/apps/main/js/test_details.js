@@ -29,7 +29,7 @@ if (iframe) {
         style.innerHTML = 'body { margin: 0 !important; padding: 0 !important } h1.title:first-child { margin-top: 0; }';
         document.head.appendChild(style);
 
-        iframe.setStyle('height', height + 'px');
+        iframe.setStyle('height', (height - 150) + 'px');
     });
 }
 
