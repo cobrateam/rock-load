@@ -33,7 +33,7 @@ setup(
         "mongoengine==0.4.0",
         "funkload==1.16.1",
         "fabric==1.2.0",
-        "lxml==2.2.8"
+        "lxml"
     ],
 
     entry_points={
