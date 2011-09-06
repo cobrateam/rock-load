@@ -66,6 +66,7 @@ def process_task(server_url, task_details):
         print "waiting for server to allow starting task..."
         time.sleep(1)
 
+    update_data(server_url, task_details, True, True)
     xml_text = ''
 
     bench_path = '/tmp/rockload/%s/bench' % repo_id
