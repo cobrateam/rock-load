@@ -20,7 +20,7 @@ from rockload.apps.main.models import Project, Test, TestResult, TestStats, Test
 class IndexHandler(BaseHandler):
     @authenticated
     def get(self):
-        if not Project.get_projects_for_user(self.get_current_user()):
+        if not self.all_projects():
             self.redirect("/noprojects")
 
         results = TestResult.objects.order_by('-created_date').all()
