@@ -145,15 +145,21 @@ class NewTestHandler(BaseHandler):
 class TestDetailsHandler(BaseHandler):
     @authenticated
     def get(self, project_name, test_name):
+        projects = self.all_projects()
         project = Project.objects(name=project_name).get()
-        test = Test.objects(project=project, name=test_name).get()
+        test = Test.objects(project=project, name=test_name.strip()).all()[0]
         results = [result for result in TestResult.objects(test=test) if result.done]
 
         test_scheduled = False
         if self.get_argument('test_scheduled', None) == 'true':
             test_scheduled = True
 
-        self.render('rockload/apps/main/test_details.html', projects=self.all_projects(), project=project, test=test, test_scheduled=test_scheduled, results=results)
+        self.render('rockload/apps/main/test_details.html',
+                    projects=projects,
+                    project=project,
+                    test=test,
+                    test_scheduled=test_scheduled,
+                    results=results)
 
 class StartTestHandler(BaseHandler):
     def get(self, project_name, test_name):

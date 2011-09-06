@@ -20,6 +20,6 @@ urls = (
     (r'^/projects/([^/]+)/tests/new/?', NewTestHandler),
     (r'^/projects/([^/]+)/tests/(.+?)/delete?', DeleteTestHandler),
     (r'^/projects/([^/]+)/tests/(.+?)/start?', StartTestHandler),
-    (r'^/projects/([^/]+)/tests/(.+?)/?', TestDetailsHandler),
+    (r'^/projects/(.+?)/tests/(.+?)/?', TestDetailsHandler),
     (r'^/projects/(.+?)/?', ProjectDetailsHandler),
 )

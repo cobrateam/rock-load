@@ -24,8 +24,8 @@
                                     <li><a href="/projects/{{ item.name }}">Project details</a></li>
                                     <li class="divider"></li>
                                     {% if item.tests %}
-                                        {% for test in item.tests %}
-                                        <li><a href="/projects/{{ item.name }}/tests/{{ test.name }}">{{ test.name }}</a></li>
+                                        {% for menu_test_item in item.tests %}
+                                        <li><a href="/projects/{{ item.name }}/tests/{{ menu_test_item.name }}">{{ menu_test_item.name }}</a></li>
                                         {% end %}
                                         <li class="divider"></li>
                                     {% end %}
