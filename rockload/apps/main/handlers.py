@@ -256,7 +256,7 @@ class SaveResultsHandler(BaseHandler):
             run.in_progress = False
 
             with tempfile.NamedTemporaryFile(suffix='.xml', dir=xml_dir, delete=False) as xml_file:
-                xml_file.write(self.get_argument('result'))
+                xml_file.write(self.get_argument('result').decode('utf-8'))
                 run.xml_file = xml_file.name
 
             run.done = True
