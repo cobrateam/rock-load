@@ -75,7 +75,8 @@ def process_task(server_url, task_details):
         try:
             with settings(warn_only=True):
                 command = """fl-run-bench -u %(url)s -c %(cycles)s -D %(duration)s --simple-fetch %(test_module)s %(test_class)s""" % task_details
-                local(command)
+                out = local(command, capture=True)
+                print out
                 print 'just finished testing'
         finally:
             print 'Generating XML'
