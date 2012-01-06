@@ -10,7 +10,9 @@ from urllib import urlopen, urlencode
 from uuid import uuid4
 import shutil
 
-from fabric.api import local, lcd, settings
+import commands
+
+# from fabric.api import local, lcd, settings
 
 DEFAULT_PORT = 3333
 DEFAULT_IP = '0.0.0.0'
@@ -33,6 +35,8 @@ def main():
             result = process_task(server_url, details)
             if not post_results(server_url, details, result).read() == 'OK':
                 print 'Failed sending results to server for test %s' % details['result_id']
+            else:
+                print 'Posted! Now go take a look at your RockLoad server!'
         time.sleep(5)
 
 def update_data(server_url, task_details, cloned, in_progress):
@@ -66,22 +70,13 @@ def process_task(server_url, task_details):
     while cant_start_task(server_url, task_details):
         print "waiting for server to allow starting task..."
         time.sleep(1)
-
-    update_data(server_url, task_details, True, True)
+    
     xml_text = ''
-
+    update_data(server_url, task_details, True, True)
     bench_path = '/tmp/rockload/%s/bench' % repo_id
-    with lcd(bench_path):
-        with settings(warn_only=True):
-            command = """fl-run-bench -u %(url)s -c %(cycles)s -D %(duration)s --simple-fetch %(test_module)s %(test_class)s""" % task_details
-            try:
-                out = local(command, capture=True)
-            finally:
-                print out
-                print 'just finished testing'
-        print 'Generating XML'
-        xml_text = open(join(bench_path, 'funkload.xml')).read()
-
+    command = "cd %s; " % (bench_path) + "fl-run-bench -u %(url)s -c %(cycles)s -D %(duration)s --simple-fetch %(test_module)s %(test_class)s" % (task_details)
+    print commands.getoutput(command)
+    xml_text = open(join(bench_path, 'funkload.xml')).read()
     print 'Cleaning Temp folder'
     shutil.rmtree('/tmp/rockload/%s' % repo_id)
     return xml_text
@@ -91,8 +86,7 @@ def download_from_git(git_repo):
     repo_id = uuid4()
     if not exists('/tmp/rockload'):
         os.makedirs('/tmp/rockload')
-    local('git clone %s /tmp/rockload/%s' % (git_repo, repo_id))
-
+    print commands.getoutput('git clone %s /tmp/rockload/%s' % (git_repo, repo_id))
     return repo_id
 
 
