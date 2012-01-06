@@ -45,6 +45,7 @@ def update_data(server_url, task_details, cloned, in_progress):
 
 
 def post_results(server_url, task_details, result):
+    print 'Trying to post results'
     return urlopen('%s/post-results' % server_url, urlencode({
         'result_id': task_details['result_id'],
         'run_id': task_details['run_id'],
@@ -74,6 +75,7 @@ def process_task(server_url, task_details):
         with settings(warn_only=True):
             command = """fl-run-bench -u %(url)s -c %(cycles)s -D %(duration)s --simple-fetch %(test_module)s %(test_class)s""" % task_details
             local(command)
+            print 'just finished testing'
         xml_text = open(join(bench_path, 'funkload.xml')).read()
 
     shutil.rmtree('/tmp/rockload/%s' % repo_id)
