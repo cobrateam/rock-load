@@ -73,10 +73,9 @@ def process_task(server_url, task_details):
     bench_path = '/tmp/rockload/%s/bench' % repo_id
     with lcd(bench_path):
         try:
-            with settings(warn_only=True):
+            with settings(hide('stderr'), show('stdout'), warn_only=True):
                 command = """fl-run-bench -u %(url)s -c %(cycles)s -D %(duration)s --simple-fetch %(test_module)s %(test_class)s""" % task_details
-                out = local(command, capture=True)
-                print out
+                local(command)
                 print 'just finished testing'
         finally:
             print 'Generating XML'
