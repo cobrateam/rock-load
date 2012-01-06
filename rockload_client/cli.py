@@ -74,8 +74,10 @@ def process_task(server_url, task_details):
     with lcd(bench_path):
         with settings(warn_only=True):
             command = """fl-run-bench -u %(url)s -c %(cycles)s -D %(duration)s --simple-fetch %(test_module)s %(test_class)s""" % task_details
-            local(command)
-            print 'just finished testing'
+            try:
+                local(command)
+            finally:
+                print 'just finished testing'
         xml_text = open(join(bench_path, 'funkload.xml')).read()
 
     shutil.rmtree('/tmp/rockload/%s' % repo_id)
