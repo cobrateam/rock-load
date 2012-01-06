@@ -78,6 +78,7 @@ def process_task(server_url, task_details):
     update_data(server_url, task_details, True, True)
     bench_path = '/tmp/rockload/%s/bench' % repo_id
     command = "cd %s; " % (bench_path) + "fl-run-bench -u %(url)s -c %(cycles)s -D %(duration)s --simple-fetch %(test_module)s %(test_class)s" % (task_details)
+    logging.debug("Starting benchmark... go get a cup a coffee")
     output = commands.getoutput(command)
     logging.debug(output)
     
