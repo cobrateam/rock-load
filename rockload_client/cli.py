@@ -75,7 +75,7 @@ def process_task(server_url, task_details):
         with settings(warn_only=True):
             command = """fl-run-bench -u %(url)s -c %(cycles)s -D %(duration)s --simple-fetch %(test_module)s %(test_class)s""" % task_details
             try:
-                local(command)
+                local(command, capture=False)
             finally:
                 print 'just finished testing'
         xml_text = open(join(bench_path, 'funkload.xml')).read()
