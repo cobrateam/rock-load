@@ -82,6 +82,7 @@ def process_task(server_url, task_details):
         print 'Generating XML'
         xml_text = open(join(bench_path, 'funkload.xml')).read()
 
+    print 'Cleaning Temp folder'
     shutil.rmtree('/tmp/rockload/%s' % repo_id)
     return xml_text
 
