@@ -12,22 +12,23 @@ import shutil
 
 import commands
 import logging
-# from fabric.api import local, lcd, settings
 
 DEFAULT_PORT = 3333
 DEFAULT_IP = '0.0.0.0'
+DEFAULT_LOG_PATH = '%s/logs' % (os.environ['HOME'])
 
 
 def main():
-    log_path = "%s/logs/rock-cli-%s.log" % (os.environ['HOME'], os.getpid())
-    logging.basicConfig(filename=log_path,level=logging.DEBUG)
-    
     parser = optparse.OptionParser(usage="rockload-client or type rockload-client -h (--help) for help", description=__doc__, version="0.1.0")
     parser.add_option("-p", "--port", type="int", dest="port", default=DEFAULT_PORT, help = "The port where rockload-server is [default: %default]." )
     parser.add_option("-i", "--host", dest="host", default=DEFAULT_IP, help = "The ip address of rockload-server [default: %default]." )
+    parser.add_option("-l", "--log-path", dest="log_path", default=DEFAULT_LOG_PATH, help = "The path for the rockload-client logs  [default: %default]." )
 
     (opt, args) = parser.parse_args()
 
+    log_path = "%s/logs/rock-cli-%s.log" % (opt.log_path, os.getpid())
+    logging.basicConfig(filename=log_path,level=logging.DEBUG)
+    
     server_url = "http://%s:%s" % (opt.host, opt.port)
 
     while True:
