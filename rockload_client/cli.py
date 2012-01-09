@@ -26,7 +26,7 @@ def main():
 
     (opt, args) = parser.parse_args()
 
-    log_path = "%s/logs/rock-cli-%s.log" % (opt.log_path, os.getpid())
+    log_path = "%s/rock-cli-%s.log" % (opt.log_path, os.getpid())
     logging.basicConfig(filename=log_path,level=logging.DEBUG)
     
     server_url = "http://%s:%s" % (opt.host, opt.port)
