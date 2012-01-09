@@ -32,7 +32,7 @@ setup(
         "aero==0.3.6a",
         "mongoengine==0.4.0",
         "funkload==1.16.1",
-        "fabric==1.2.0",
+        "fabric==1.3.3",
         "lxml"
     ],
 
